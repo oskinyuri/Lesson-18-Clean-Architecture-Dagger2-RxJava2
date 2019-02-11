@@ -1,10 +1,11 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Entity.Utils;
 
-import java.time.DateTimeException;
 import java.util.Calendar;
 
 
 public class UtilDate {
+
+    //public static boolean validate
 
     public static long getTodayEpoch(){
         long millisInDay = 60 * 60 * 24 * 1000;
@@ -19,6 +20,10 @@ public class UtilDate {
         return DayOfWeek.getDayOfInt(dayOfWeek);
     }
 
+    public static String getTodayString(){
+        return DayOfWeek.getDayOfInt(8);
+    }
+
     private enum DayOfWeek{
         SUNDAY,
         MONDAY,
@@ -26,7 +31,8 @@ public class UtilDate {
         WEDNESDAY,
         THURSDAY,
         FRIDAY,
-        SATURDAY;
+        SATURDAY,
+        TODAY;
 
 
         private static DayOfWeek[] DAYS = DayOfWeek.values();

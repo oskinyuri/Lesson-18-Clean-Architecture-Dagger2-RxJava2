@@ -1,6 +1,6 @@
 package com.example.oskin.lesson_15_clean_architecture.Data.Web;
 
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.WeatherModel.WeatherModel;
+import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

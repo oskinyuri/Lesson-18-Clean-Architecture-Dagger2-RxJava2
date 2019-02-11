@@ -1,34 +1,23 @@
 package com.example.oskin.lesson_15_clean_architecture.Data.DB;
 
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.WeatherModel.ForecastDay;
-
-import java.util.List;
+import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.Forecast;
+import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.ForecastDay;
+import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 @Dao
 public interface ForecastDAO {
 
-    @Query("select * from ForecastDay where cityName = :cityName limit :countDays")
-    List<ForecastDay> getForecast(String cityName, int countDays);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addWeatherModel(WeatherModel weatherModel);
 
-    @Insert (onConflict = OnConflictStrategy.REPLACE)
-    void addForecast(List<ForecastDay> forecastDays);
+    @Query("select * from WeatherModel where location_name = :cityName")
+    WeatherModel getWeatherModel(String cityName);
 
-    @Update
-    void updateNote(List<ForecastDay> forecastDays);
-
-    @Query("delete from ForecastDay")
-    void deleteForecast();
-
-    @Query("delete from ForecastDay where date_epoch < :todayEpoch")
-    void deleteForecast(long todayEpoch);
-
-
-
-
+    @Query("delete from WeatherModel where current_last_updated_epoch < :todayEpoch")
+    void deleteWeatherModel(long todayEpoch);
 }

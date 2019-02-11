@@ -14,14 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Presentation.UI.MainActivity">
+        <activity android:name=".Presentation.UI.MainWeekActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Presentation.UI.ForecastActivity"></activity>
+        <activity
+            android:name=".Presentation.UI.SettingsActivity">
+        </activity>
     </application>
 
 </manifest>

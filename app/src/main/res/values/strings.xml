@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Lesson-15-Clean-Architecture</string>
+
+    <string name="wind_speed_in_kmh">Wind speed %1$s km/h</string>
+    <string name="wind_speed_in_mph">Wind speed %1$s mph</string>
+    <string name="precipiation_in_mm">Precipitation %1$s mm</string>
+    <string name="precipiation_in_in">Precipitation %1$s in</string>
+
+    <!--I'm not sure about this strings-->
+    <string name="humidity">Humidity %1$s%%</string>
+    <string name="cloud">Cloud %1$s%%</string>
+
+    <!--\u00B0 is a celsius sign-->
+    <string name="temperature">%1$s\u00B0</string>
+    <string name="feels_like">Feels like: %1$s\u00B0</string>
+
+    <string name="stub_wind_speed">Wind speed</string>
+    <string name="precipitation">Precipitation</string>
+    <string name="stub_humidity">Humidity</string>
+    <string name="stub_cloud">Cloud</string>
+    <string name="stub_t">t˚</string>
+    <string name="stub_condition">Condition</string>
+    <string name="stub_feels_like_t">Feels like: t˚</string>
+    <string name="stub_city_name">City name</string>
+
 </resources>
