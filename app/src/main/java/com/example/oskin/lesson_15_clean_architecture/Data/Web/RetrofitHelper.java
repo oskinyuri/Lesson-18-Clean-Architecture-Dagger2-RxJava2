@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,10 +23,13 @@ public class RetrofitHelper {
                 .setLenient()
                 .create();
 
-        OkHttpClient client = new OkHttpClient.Builder()
+
+        //TODO it doesn't work( why?
+        final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

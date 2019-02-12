@@ -12,6 +12,7 @@
 
     <!--\u00B0 is a celsius sign-->
     <string name="temperature">%1$s\u00B0</string>
+    <string name="min_max_temperature">%1$s\u00B0 / %2$s\u00B0</string>
     <string name="feels_like">Feels like: %1$s\u00B0</string>
 
     <string name="stub_wind_speed">Wind speed</string>
@@ -22,5 +23,9 @@
     <string name="stub_condition">Condition</string>
     <string name="stub_feels_like_t">Feels like: t˚</string>
     <string name="stub_city_name">City name</string>
+    <string name="forecast">Forecast</string>
+    <string name="forecast_on_day">Forecast on day</string>
+    <string name="setting_item">Setting item</string>
+    <string name="settings">Settings</string>
 
 </resources>

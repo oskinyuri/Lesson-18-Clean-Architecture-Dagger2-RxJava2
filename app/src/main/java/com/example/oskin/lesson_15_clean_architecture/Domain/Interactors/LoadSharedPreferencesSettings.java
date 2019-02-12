@@ -4,12 +4,12 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPr
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.LoadSharedPrefCallback;
 
-public class LoadSharedPreferences {
+public class LoadSharedPreferencesSettings {
 
     private IRepository mRepository;
     private SharedPrefDTO mDTOOutput;
 
-    public LoadSharedPreferences(IRepository repository) {
+    public LoadSharedPreferencesSettings(IRepository repository) {
         mRepository = repository;
     }
 

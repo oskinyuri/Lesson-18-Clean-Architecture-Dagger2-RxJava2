@@ -20,7 +20,7 @@ public class WeatherMapper {
          */
         ForecastDTOOutput.SettingPref settingPref = new ForecastDTOOutput.SettingPref();
         settingPref.setCelsius(sharedPrefDTO.isCelsius());
-        settingPref.setMm(sharedPrefDTO.isMmHg());
+        settingPref.setMm(sharedPrefDTO.isMm());
         settingPref.setKilometers(sharedPrefDTO.isKm());
         dtoOutput.setSettingPref(settingPref);
 
@@ -49,7 +49,7 @@ public class WeatherMapper {
         } else {
             current.setWind(weatherModel.getCurrent().getWindMph());
         }
-        if (sharedPrefDTO.isMmHg()){
+        if (sharedPrefDTO.isMm()){
             current.setPrecip(weatherModel.getCurrent().getPrecipMm());
         } else {
             current.setPrecip(weatherModel.getCurrent().getPrecipIn());
@@ -96,7 +96,7 @@ public class WeatherMapper {
                 day.setWind(fDay.getDay().getMaxwindMph());
             }
 
-            if (sharedPrefDTO.isMmHg()) {
+            if (sharedPrefDTO.isMm()) {
                 day.setPrecip(fDay.getDay().getTotalprecipMm());
             } else {
                 day.setPrecip(fDay.getDay().getTotalprecipIn());

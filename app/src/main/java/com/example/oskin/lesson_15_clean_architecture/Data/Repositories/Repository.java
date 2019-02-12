@@ -9,10 +9,12 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.Forecast
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.LoadSharedPrefCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
 
 public class Repository implements IRepository {
 
@@ -49,9 +51,12 @@ public class Repository implements IRepository {
             mWeatherModelResponse = loadFromWeb(forecastDTOInput);
         }
 
-        if (mWeatherModelResponse != null){
-            mDBManager.addWeatherModel(mWeatherModelResponse);
+        if (mWeatherModelResponse == null){
+            mLoadCallback.onFailure();
+            return;
         }
+
+        mDBManager.addWeatherModel(mWeatherModelResponse);
 
         mWeatherModelResponse = loadFromDB(forecastDTOInput);
         mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, sharedPrefDTO);
@@ -67,6 +72,17 @@ public class Repository implements IRepository {
     public void loadSharedPreferences(SharedPrefDTO sharedPrefDTO, LoadSharedPrefCallback callback) {
         mPrefManager.loadSharedPref(sharedPrefDTO);
         callback.onResponse();
+    }
+
+    @Override
+    public void setSelectedDay(ForecastDTOOutput.Day day, SetSelectedDayCallback callback) {
+        mPrefManager.setSelectedDay(day);
+        callback.onResponse();
+    }
+
+    @Override
+    public void getSelectedDay(GetSelectedDayCallback callback) {
+        callback.onResponse(mPrefManager.getSelectedDay());
     }
 
     private WeatherModel loadFromDB(ForecastDTOInput request) {

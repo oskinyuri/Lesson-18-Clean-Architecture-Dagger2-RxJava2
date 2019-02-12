@@ -22,7 +22,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Presentation.UI.SettingsActivity">
+            android:name=".Presentation.UI.SettingsActivity"
+            android:parentActivityName=".Presentation.UI.MainWeekActivity"></activity>
+        <activity
+            android:name=".Presentation.UI.DayActivity"
+            android:parentActivityName=".Presentation.UI.MainWeekActivity"
+            >
         </activity>
     </application>
 

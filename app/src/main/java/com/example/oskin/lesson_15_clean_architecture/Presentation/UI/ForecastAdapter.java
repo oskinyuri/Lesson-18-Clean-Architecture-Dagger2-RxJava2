@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ForecastAdapter extends RecyclerView.Adapter {
 
     private List<ForecastDTOOutput.Day> mForecastDayList;
+    private View.OnClickListener mOnClickListener;
 
-    public ForecastAdapter() {
+    public ForecastAdapter(View.OnClickListener onClickListener) {
         mForecastDayList = new ArrayList<>();
+        mOnClickListener = onClickListener;
     }
 
     public void setData(List<ForecastDTOOutput.Day> forecastDayList){
@@ -61,6 +63,8 @@ public class ForecastAdapter extends RecyclerView.Adapter {
 
         public ForecastHolder(@NonNull View itemView) {
             super(itemView);
+
+            itemView.setOnClickListener(mOnClickListener);
 
             date = itemView.findViewById(R.id.item_forecast_date);
             day = itemView.findViewById(R.id.item_forecast_day);

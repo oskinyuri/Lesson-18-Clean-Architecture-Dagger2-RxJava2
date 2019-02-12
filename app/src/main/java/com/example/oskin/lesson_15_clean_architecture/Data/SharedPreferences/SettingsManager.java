@@ -55,7 +55,7 @@ public class SettingsManager {
         editor.putString(SETTINGS_CITY, sharedPrefDTO.getCityName());
         editor.putInt(SETTINGS_COUNT_DAYS, sharedPrefDTO.getCountDays());
         editor.putBoolean(SETTINGS_TEMP_UNIT_IS_CELSIUS, sharedPrefDTO.isCelsius());
-        editor.putBoolean(SETTINGS_PRECIP_UNIT_IS_MM, sharedPrefDTO.isMmHg());
+        editor.putBoolean(SETTINGS_PRECIP_UNIT_IS_MM, sharedPrefDTO.isMm());
         editor.putBoolean(SETTINGS_WIND_SPEED_UNIT_IS_KMH, sharedPrefDTO.isKm());
         editor.apply();
 

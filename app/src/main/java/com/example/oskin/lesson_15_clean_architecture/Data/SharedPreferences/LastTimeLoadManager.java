@@ -5,14 +5,14 @@ import android.content.SharedPreferences;
 
 public class LastTimeLoadManager {
 
-    private String PREF_LAST_LOAD = "PREF_LAST_LOAD";
+    private String PREF_LAST_LOAD_TIME = "PREF_LAST_LOAD_TIME";
     private String LAST_LOAD_TIME = "LAST_LOAD_TIME";
 
     private SharedPreferences mPreferences;
 
     public void setLastTimeLoad(long timeInEpoch, Context context){
 
-        mPreferences = context.getSharedPreferences(PREF_LAST_LOAD, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(PREF_LAST_LOAD_TIME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putLong(LAST_LOAD_TIME, timeInEpoch);
         editor.apply();
@@ -20,7 +20,7 @@ public class LastTimeLoadManager {
     }
 
     public long getLastTimeLoad(Context context){
-        mPreferences = context.getSharedPreferences(PREF_LAST_LOAD, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(PREF_LAST_LOAD_TIME, Context.MODE_PRIVATE);
         return mPreferences.getLong(LAST_LOAD_TIME, 0);
     }
 

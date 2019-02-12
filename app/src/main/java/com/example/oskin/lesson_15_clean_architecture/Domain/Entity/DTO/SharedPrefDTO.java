@@ -39,7 +39,7 @@ public class SharedPrefDTO {
         mIsCelsius = celsius;
     }
 
-    public boolean isMmHg() {
+    public boolean isMm() {
         return mIsMmHg;
     }
 

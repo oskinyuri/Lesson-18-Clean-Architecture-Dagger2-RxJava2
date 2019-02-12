@@ -67,7 +67,7 @@
         tools:checked="true" />
 
     <Switch
-        android:id="@+id/settings_switch_temp2"
+        android:id="@+id/settings_switch_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -81,7 +81,7 @@
         tools:checked="true" />
 
     <Switch
-        android:id="@+id/settings_switch_temp3"
+        android:id="@+id/settings_switch_precip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -91,7 +91,7 @@
         android:textOff="in"
         android:textOn="mm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_switch_temp2"
+        app:layout_constraintTop_toBottomOf="@+id/settings_switch_speed"
         tools:checked="true" />
 
 

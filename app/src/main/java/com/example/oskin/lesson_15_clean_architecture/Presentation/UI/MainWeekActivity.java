@@ -1,13 +1,14 @@
 package com.example.oskin.lesson_15_clean_architecture.Presentation.UI;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOInput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.IMainWeekView;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.MainWeekPresenter;
@@ -15,11 +16,12 @@ import com.example.oskin.lesson_15_clean_architecture.R;
 
 import java.util.List;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainWeekActivity extends AppCompatActivity implements IMainWeekView {
+public class MainWeekActivity extends AppCompatActivity implements IMainWeekView, View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mAdapter;
@@ -36,6 +38,9 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     private ImageView mConditionImg;
     private ProgressBar mProgressBar;
 
+    //TODO как сделать правильно?
+    private boolean mFistStart = true;
+
     private MainWeekPresenter mPresenter;
 
     @Override
@@ -44,7 +49,14 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
         setContentView(R.layout.activity_week_main);
         initViews();
         initRecycler();
+        initActionBar();
         mPresenter = new MainWeekPresenter();
+    }
+
+    private void initActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle(getString(R.string.forecast));
     }
 
     private void initRecycler() {
@@ -53,7 +65,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
                 this,
                 RecyclerView.VERTICAL,
                 false);
-        mAdapter = new ForecastAdapter();
+        mAdapter = new ForecastAdapter(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -74,15 +86,22 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         mPresenter.onAttach(this);
-        mPresenter.loadWeatherForecast();
+        if (mFistStart)
+            mPresenter.loadWeatherForecast();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         mPresenter.onDetach();
+        mFistStart = false;
         super.onPause();
     }
 
@@ -142,6 +161,28 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void starNewScreen() {
-        //TODO day activity
+        startActivity(DayActivity.newIntent(this));
+    }
+
+    @Override
+    public void onClick(View v) {
+        int itemPosition = mRecyclerView.getChildLayoutPosition(v);
+        mPresenter.setSelectedDay(itemPosition);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.week_menu, menu);
+        menu.findItem(R.id.setting_item);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.setting_item){
+            Toast.makeText(MainWeekActivity.this, "Settings", Toast.LENGTH_SHORT).show();
+            startActivity(SettingsActivity.newIntent(MainWeekActivity.this));
+        }
+        return true;
     }
 }

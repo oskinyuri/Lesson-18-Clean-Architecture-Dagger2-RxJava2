@@ -6,7 +6,9 @@ import android.os.Looper;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadWeatherForecast;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDay;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
@@ -15,11 +17,21 @@ import java.util.concurrent.Executors;
 public class MainWeekPresenter implements ILoadDTOCallback {
 
     private IMainWeekView mView;
-    private LoadWeatherForecast mLoadWeatherForecast;
-    private ForecastDTOOutput mDTOOutput;
-    private IRepository mRepository;
 
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private ForecastDTOOutput mDTOOutput;
+    private ForecastDTOOutput.Day mDay;
+
+    private LoadWeatherForecast mLoadWeatherForecast;
+    private SetSelectedDay mSetSelectedDay;
+    private IRepository mRepository;
+    private ExecutorService mExecutorService;
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+    public MainWeekPresenter() {
+        mExecutorService = Executors.newSingleThreadExecutor();
+        mRepository = WeatherApp.getRepository();
+    }
 
     public void onAttach(IMainWeekView view) {
         mView = view;
@@ -33,7 +45,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
     @Override
     public void onResponse(ForecastDTOOutput dtoOutput) {
         mDTOOutput = dtoOutput;
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mView == null)
@@ -48,27 +60,54 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
     @Override
     public void onFailure() {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mView == null) {
                     return;
                 }
                 mView.hideProgress();
-                mView.makeToast("network failure :(");
+                mView.makeToast("Day loaded.");
             }
         });
     }
 
     public void startNewScreen() {
-
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mView == null) {
+                    return;
+                }
+                mView.hideProgress();
+                mView.starNewScreen();
+                //mView.makeToast("network failure :(");
+            }
+        });
     }
 
 
     public void loadWeatherForecast() {
         mView.startProgress();
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new LoadRunnable(this));
+        mExecutorService.submit(new LoadRunnable(this));
+    }
+
+    public void setSelectedDay(int itemPosition){
+        mView.startProgress();
+        mDay = mDTOOutput.getForecastForDayList().get(itemPosition);
+
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                mSetSelectedDay = new SetSelectedDay(mRepository);
+                mSetSelectedDay.setSelectedDay(mDay, new SetSelectedDayCallback() {
+                    @Override
+                    public void onResponse() {
+                        startNewScreen();
+                    }
+                });
+            }
+        });
     }
 
     //TODO move it in setting presenter
@@ -95,7 +134,6 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
         @Override
         public void run() {
-            mRepository = WeatherApp.getRepository();
             mLoadWeatherForecast = new LoadWeatherForecast(mRepository);
             mLoadWeatherForecast.loadForecast(threadCallback);
         }
