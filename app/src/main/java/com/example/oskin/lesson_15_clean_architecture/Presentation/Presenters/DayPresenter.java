@@ -5,8 +5,8 @@ import android.os.Looper;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSelectedDay;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSharedPreferencesSettings;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSelectedDayInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSharedPrefSettingsInteractor;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
@@ -23,8 +23,8 @@ public class DayPresenter {
     private ForecastDTOOutput.Day mDay;
     private IWeatherRepository mWeatherRepository;
     private ISettingsRepository mSettingsRepository;
-    private GetSelectedDay mGetSelectedDay;
-    private GetSharedPreferencesSettings mGetSharedPreferencesSettings;
+    private GetSelectedDayInteractor mGetSelectedDayInteractor;
+    private GetSharedPrefSettingsInteractor mGetSharedPrefSettingsInteractor;
     private ExecutorService mExecutorService;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -33,6 +33,8 @@ public class DayPresenter {
         mExecutorService = Executors.newSingleThreadExecutor();
         mSettingsRepository = WeatherApp.getSettingRepository();
         mWeatherRepository = WeatherApp.getWeatherRepository();
+        mGetSelectedDayInteractor = new GetSelectedDayInteractor(mWeatherRepository);
+        mGetSharedPrefSettingsInteractor = new GetSharedPrefSettingsInteractor(mSettingsRepository);
     }
 
     public void onAttach(IDayView view) {
@@ -47,16 +49,14 @@ public class DayPresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mGetSelectedDay = new GetSelectedDay(mWeatherRepository);
-                mGetSelectedDay.getSelectedDay(new GetSelectedDayCallback() {
+                mGetSelectedDayInteractor.getSelectedDay(new GetSelectedDayCallback() {
                     @Override
                     public void onResponse(ForecastDTOOutput.Day day) {
                         mDay = day;
                     }
                 });
 
-                mGetSharedPreferencesSettings = new GetSharedPreferencesSettings(mSettingsRepository);
-                mGetSharedPreferencesSettings.getSharedPref(new GetSharedPrefCallback() {
+                mGetSharedPrefSettingsInteractor.getSharedPref(new GetSharedPrefCallback() {
                     @Override
                     public void onResponse(SharedPrefDTO sharedPrefDTO) {
                         mPrefDTO = sharedPrefDTO;

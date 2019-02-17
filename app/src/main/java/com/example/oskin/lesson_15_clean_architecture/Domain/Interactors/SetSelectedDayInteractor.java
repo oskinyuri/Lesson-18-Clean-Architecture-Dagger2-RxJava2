@@ -4,11 +4,11 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.Forecast
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
 
-public class SetSelectedDay {
+public class SetSelectedDayInteractor {
 
     private IWeatherRepository mRepository;
 
-    public SetSelectedDay(IWeatherRepository repository){
+    public SetSelectedDayInteractor(IWeatherRepository repository){
         mRepository = repository;
     }
 

@@ -7,8 +7,8 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.Forecast
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadWeatherForecast;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDay;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadWeatherForecastInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDayInteractor;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
@@ -21,8 +21,8 @@ public class MainWeekPresenter implements ILoadDTOCallback {
     private ForecastDTOOutput mDTOOutput;
     private ForecastDTOOutput.Day mDay;
 
-    private LoadWeatherForecast mLoadWeatherForecast;
-    private SetSelectedDay mSetSelectedDay;
+    private LoadWeatherForecastInteractor mLoadWeatherForecastInteractor;
+    private SetSelectedDayInteractor mSetSelectedDayInteractor;
     private IWeatherRepository mRepository;
     private ExecutorService mExecutorService;
 
@@ -32,7 +32,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         mExecutorService = Executors.newSingleThreadExecutor();
         mRepository = WeatherApp.getWeatherRepository();
         mHandler = new Handler(Looper.getMainLooper());
-        mLoadWeatherForecast = new LoadWeatherForecast(mRepository);
+        mLoadWeatherForecastInteractor = new LoadWeatherForecastInteractor(mRepository);
     }
 
     public void onAttach(IMainWeekView view) {
@@ -94,7 +94,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-               mLoadWeatherForecast.loadForecast(new ILoadDTOCallback() {
+               mLoadWeatherForecastInteractor.loadForecast(new ILoadDTOCallback() {
                    @Override
                    public void onResponse(ForecastDTOOutput dtoOutput) {
                        MainWeekPresenter.this.onResponse(dtoOutput);
@@ -117,8 +117,8 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mSetSelectedDay = new SetSelectedDay(mRepository);
-                mSetSelectedDay.setSelectedDay(mDay, new SetSelectedDayCallback() {
+                mSetSelectedDayInteractor = new SetSelectedDayInteractor(mRepository);
+                mSetSelectedDayInteractor.setSelectedDay(mDay, new SetSelectedDayCallback() {
                     @Override
                     public void onResponse() {
                         startNewScreen();
@@ -140,7 +140,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
         @Override
         public void run() {
-            mLoadWeatherForecast.loadForecast(threadCallback);
+            mLoadWeatherForecastInteractor.loadForecast(threadCallback);
         }
     }
 }

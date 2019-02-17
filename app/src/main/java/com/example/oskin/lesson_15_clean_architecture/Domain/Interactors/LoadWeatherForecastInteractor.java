@@ -4,12 +4,12 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.Forecast
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 
-public class LoadWeatherForecast implements ILoadDTOCallback {
+public class LoadWeatherForecastInteractor implements ILoadDTOCallback {
 
     private ILoadDTOCallback mCallback;
     private IWeatherRepository mRepository;
 
-    public LoadWeatherForecast(IWeatherRepository repository){
+    public LoadWeatherForecastInteractor(IWeatherRepository repository){
         mRepository = repository;
     }
 

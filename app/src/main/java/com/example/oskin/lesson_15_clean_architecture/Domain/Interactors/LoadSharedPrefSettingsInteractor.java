@@ -5,12 +5,12 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfa
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.LoadSharedPrefCallback;
 
-public class LoadSharedPreferencesSettings {
+public class LoadSharedPrefSettingsInteractor {
 
     private ISettingsRepository mRepository;
     private SharedPrefDTO mDTOOutput;
 
-    public LoadSharedPreferencesSettings(ISettingsRepository repository) {
+    public LoadSharedPrefSettingsInteractor(ISettingsRepository repository) {
         mRepository = repository;
     }
 
