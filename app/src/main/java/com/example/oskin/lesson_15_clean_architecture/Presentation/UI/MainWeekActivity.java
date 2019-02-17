@@ -43,9 +43,6 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    //TODO как сделать правильно?
-    private boolean mFistStart = true;
-
     private MainWeekPresenter mPresenter;
 
     @Override
@@ -85,14 +82,14 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
         mConditionText = findViewById(R.id.week_current_condition_text_view);
         mCityName = findViewById(R.id.week_current_city_name_text_view);
 
-        mSwipeRefreshLayout =findViewById(R.id.week_swipe_refresh_layout);
+        mSwipeRefreshLayout = findViewById(R.id.week_swipe_refresh_layout);
 
         mProgressBar = findViewById(R.id.week_progressBar);
 
         mConditionImg = findViewById(R.id.week_current_condition_img);
     }
 
-    private void initListeners(){
+    private void initListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -109,8 +106,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     @Override
     protected void onResume() {
         mPresenter.onAttach(this);
-        if (mFistStart)
-            mPresenter.loadWeatherForecast();
+        mPresenter.loadWeatherForecast();
         super.onResume();
         initListeners();
     }
@@ -118,7 +114,6 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     @Override
     protected void onPause() {
         mPresenter.onDetach();
-        mFistStart = false;
         super.onPause();
     }
 
@@ -135,8 +130,8 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void hideProgress() {
-        //mProgressBar.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
+        //mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -188,7 +183,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.item_forecast){
+        if (v.getId() == R.id.item_forecast) {
             int itemPosition = mRecyclerView.getChildLayoutPosition(v);
             mPresenter.setSelectedDay(itemPosition);
         }
@@ -204,7 +199,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.setting_item){
+        if (item.getItemId() == R.id.setting_item) {
             Toast.makeText(MainWeekActivity.this, "Settings", Toast.LENGTH_SHORT).show();
             startActivity(SettingsActivity.newIntent(MainWeekActivity.this));
         }

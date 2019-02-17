@@ -90,7 +90,24 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
     public void loadWeatherForecast() {
         mView.startProgress();
-        mExecutorService.submit(new LoadRunnable(this));
+
+        mExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+               mLoadWeatherForecast.loadForecast(new ILoadDTOCallback() {
+                   @Override
+                   public void onResponse(ForecastDTOOutput dtoOutput) {
+                       MainWeekPresenter.this.onResponse(dtoOutput);
+                   }
+
+                   @Override
+                   public void onFailure() {
+                       MainWeekPresenter.this.onFailure();
+                   }
+               });
+            }
+        });
+        //mExecutorService.submit(new LoadRunnable(this));
     }
 
     public void setSelectedDay(int itemPosition){
@@ -111,26 +128,14 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         });
     }
 
-    //TODO move it in setting presenter
-    /**private boolean validateCity(String city) {
-        for (Cities c : Cities.values()) {
-            if (c.name().equals(city))
-                return true;
-        }
-        return false;
-    }
-
-    private boolean validateCountDays(int countDays) {
-        if ((Days.One.getValue() <= countDays) && (countDays <= Days.Seven.getValue()))
-            return true;
-        return false;
-    }**/
 
     private class LoadRunnable implements Runnable {
         private ILoadDTOCallback threadCallback;
 
         public LoadRunnable(ILoadDTOCallback callback) {
             threadCallback = callback;
+
+
         }
 
         @Override
@@ -139,3 +144,17 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         }
     }
 }
+//TODO move it in setting presenter
+/**private boolean validateCity(String city) {
+ for (Cities c : Cities.values()) {
+ if (c.name().equals(city))
+ return true;
+ }
+ return false;
+ }
+
+ private boolean validateCountDays(int countDays) {
+ if ((Days.One.getValue() <= countDays) && (countDays <= Days.Seven.getValue()))
+ return true;
+ return false;
+ }**/
