@@ -8,5 +8,6 @@ public interface ISettingView {
     void setCitiesDropList();
     void setCountDaysDropList();
     void makeToast(String text);
+    void setSpinnerAdapter(Integer[] data);
 
 }

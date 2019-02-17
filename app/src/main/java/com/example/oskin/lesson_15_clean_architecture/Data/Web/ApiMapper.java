@@ -1,7 +1,6 @@
 package com.example.oskin.lesson_15_clean_architecture.Data.Web;
 
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
-import com.example.oskin.lesson_15_clean_architecture.Data.Repositories.ILoadWeatherCallback;
 
 import java.io.IOException;
 

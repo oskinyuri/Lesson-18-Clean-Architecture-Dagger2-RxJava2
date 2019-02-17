@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.IMainWeekView;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.MainWeekPresenter;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainWeekActivity extends AppCompatActivity implements IMainWeekView, View.OnClickListener {
 
@@ -36,7 +38,10 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     private TextView mConditionText;
     private TextView mCityName;
     private ImageView mConditionImg;
+
     private ProgressBar mProgressBar;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     //TODO как сделать правильно?
     private boolean mFistStart = true;
@@ -65,7 +70,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
                 this,
                 RecyclerView.VERTICAL,
                 false);
-        mAdapter = new ForecastAdapter(this);
+        mAdapter = new ForecastAdapter(this, MainWeekActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -80,9 +85,20 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
         mConditionText = findViewById(R.id.week_current_condition_text_view);
         mCityName = findViewById(R.id.week_current_city_name_text_view);
 
+        mSwipeRefreshLayout =findViewById(R.id.week_swipe_refresh_layout);
+
         mProgressBar = findViewById(R.id.week_progressBar);
 
         mConditionImg = findViewById(R.id.week_current_condition_img);
+    }
+
+    private void initListeners(){
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.loadWeatherForecast();
+            }
+        });
     }
 
     @Override
@@ -96,6 +112,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
         if (mFistStart)
             mPresenter.loadWeatherForecast();
         super.onResume();
+        initListeners();
     }
 
     @Override
@@ -107,17 +124,19 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void makeToast(String text) {
-        Toast.makeText(MainWeekActivity.this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainWeekActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void startProgress() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(true);
+        //mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mProgressBar.setVisibility(View.GONE);
+        //mProgressBar.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -151,7 +170,10 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
                     Double.toString(currentDay.getPrecip())));
         }
 
-        //TODO load img
+        String url = "http:" + currentDay.getConditionImgUrl();
+        Glide.with(this)
+                .load(url)
+                .into(mConditionImg);
     }
 
     @Override
@@ -166,8 +188,11 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void onClick(View v) {
-        int itemPosition = mRecyclerView.getChildLayoutPosition(v);
-        mPresenter.setSelectedDay(itemPosition);
+        if (v.getId() == R.id.item_forecast){
+            int itemPosition = mRecyclerView.getChildLayoutPosition(v);
+            mPresenter.setSelectedDay(itemPosition);
+        }
+
     }
 
     @Override

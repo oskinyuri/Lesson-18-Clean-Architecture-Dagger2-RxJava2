@@ -2,23 +2,33 @@ package com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO;
 
 public class ForecastDTOInput {
 
-    private String mCityName;
+    private double mLatitude;
+    private double mLongitude;
     private int mCountDays;
 
     public ForecastDTOInput() {
     }
 
-    public ForecastDTOInput(String cityName, int countDays) {
-        mCityName = cityName;
+    public ForecastDTOInput(double latitude, double longitude, int countDays) {
+        mLatitude = latitude;
+        mLongitude = longitude;
         mCountDays = countDays;
     }
 
-    public String getCityName() {
-        return mCityName;
+    public double getLatitude() {
+        return mLatitude;
     }
 
-    public void setCityName(String cityName) {
-        mCityName = cityName;
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
     }
 
     public int getCountDays() {

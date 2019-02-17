@@ -1,4 +1,4 @@
-package com.example.oskin.lesson_15_clean_architecture.Data.SharedPreferences;
+package com.example.oskin.lesson_15_clean_architecture.Data.SharedPreferences.WeatherPreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

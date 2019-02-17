@@ -13,6 +13,5 @@ public interface WeatherApi {
             @Query("q") String cityName,
             @Query("days") int days);
 
-    @GET("https://api.apixu.com/v1/forecast.json?key=66d755c1072e47dcab4161954190202&q=Moscow&days=1")
-    Call<WeatherModel> getForecastTest();
+
 }

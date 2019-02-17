@@ -5,8 +5,6 @@ import java.util.Calendar;
 
 public class UtilDate {
 
-    //public static boolean validate
-
     public static long getTodayEpoch(){
         long millisInDay = 60 * 60 * 24 * 1000;
         return ((System.currentTimeMillis() / millisInDay) * millisInDay) / 1000;

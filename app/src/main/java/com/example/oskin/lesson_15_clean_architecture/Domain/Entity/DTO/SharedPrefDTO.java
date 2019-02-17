@@ -1,11 +1,15 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO;
 
 public class SharedPrefDTO {
+
     private String mCityName;
     private int mCountDays;
     private boolean mIsKm;
     private boolean mIsCelsius;
-    private boolean mIsMmHg;
+    private boolean mIsMm;
+
+    private float mLatitude;
+    private float mLongitude;
 
     public String getCityName() {
         return mCityName;
@@ -40,10 +44,30 @@ public class SharedPrefDTO {
     }
 
     public boolean isMm() {
-        return mIsMmHg;
+        return mIsMm;
     }
 
-    public void setMmHg(boolean mmHg) {
-        mIsMmHg = mmHg;
+    public void setMm(boolean mm) {
+        mIsMm = mm;
+    }
+
+    public float getLatitude() {
+        return mLatitude;
+    }
+
+    public void setLatitude(float latitude) {
+        mLatitude = latitude;
+    }
+
+    public float getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(float longitude) {
+        mLongitude = longitude;
+    }
+
+    public String getCityCoordinatesToString(){
+        return (mLatitude + " , " + mLongitude);
     }
 }

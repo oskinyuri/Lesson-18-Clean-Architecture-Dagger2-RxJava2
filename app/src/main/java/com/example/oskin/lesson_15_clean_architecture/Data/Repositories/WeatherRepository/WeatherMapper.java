@@ -1,4 +1,4 @@
-package com.example.oskin.lesson_15_clean_architecture.Data.Repositories;
+package com.example.oskin.lesson_15_clean_architecture.Data.Repositories.WeatherRepository;
 
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.ForecastDay;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
@@ -11,9 +11,33 @@ import java.util.List;
 
 public class WeatherMapper {
 
+    public WeatherModel getDBModelFromResponse(WeatherModel weatherModel, SharedPrefDTO sharedPrefDTO){
+
+        /**
+         * Установка правильного имени города из настроеек.
+         */
+        weatherModel.setCityName(sharedPrefDTO.getCityName());
+        weatherModel.getLocation().setName(sharedPrefDTO.getCityName());
+
+        /**
+         * Сетинг дня недели в каждый день.
+         */
+        for (ForecastDay f: weatherModel.getForecast().getForecastDayList()) {
+            f.setDayOfWeek(UtilDate.getDayOfWeek(f.getDateEpoch()));
+        }
+
+        return weatherModel;
+    }
+
+
     public ForecastDTOOutput getDTOFromPOJO(WeatherModel weatherModel, SharedPrefDTO sharedPrefDTO) {
 
         ForecastDTOOutput dtoOutput = new ForecastDTOOutput();
+
+        /**
+         * Формирование количетво дней в соответсвии с запросом.
+         */
+        weatherModel.getForecast().setForecastDayList(weatherModel.getForecast().getForecastDayList().subList(0,sharedPrefDTO.getCountDays()));
 
         /**
          * Сетинг текущих настроек

@@ -1,10 +1,14 @@
 package com.example.oskin.lesson_15_clean_architecture.Presentation.UI;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.R;
 
@@ -18,10 +22,12 @@ public class ForecastAdapter extends RecyclerView.Adapter {
 
     private List<ForecastDTOOutput.Day> mForecastDayList;
     private View.OnClickListener mOnClickListener;
+    private Context mContext;
 
-    public ForecastAdapter(View.OnClickListener onClickListener) {
+    public ForecastAdapter(View.OnClickListener onClickListener, Context context) {
         mForecastDayList = new ArrayList<>();
         mOnClickListener = onClickListener;
+        mContext = context;
     }
 
     public void setData(List<ForecastDTOOutput.Day> forecastDayList){
@@ -42,8 +48,18 @@ public class ForecastAdapter extends RecyclerView.Adapter {
         ForecastHolder forecastHolder = (ForecastHolder) holder;
         forecastHolder.date.setText(mForecastDayList.get(position).getDate());
         forecastHolder.day.setText(mForecastDayList.get(position).getDayOfWeek());
-        forecastHolder.temp.setText(String.valueOf(mForecastDayList.get(position).getMinTemp()));
+        forecastHolder.temp.setText(mContext.getResources().getString(
+                R.string.min_max_temperature,
+                String.valueOf(mForecastDayList.get(position).getMinTemp()),
+                String.valueOf(mForecastDayList.get(position).getMaxTemp())));
         forecastHolder.textCondition.setText(mForecastDayList.get(position).getConditionText());
+
+        //Not work on emulator
+        String url = "http:" + mForecastDayList.get(position).getConditionImgUrl();
+        Glide.with(forecastHolder.itemView)
+                .load(url)
+                .into(forecastHolder.imgCondition);
+
     }
 
     @Override
@@ -53,13 +69,11 @@ public class ForecastAdapter extends RecyclerView.Adapter {
 
     public class ForecastHolder extends RecyclerView.ViewHolder{
 
-        //TODO load image
-
         public TextView date;
         public TextView day;
         public TextView temp;
         public TextView textCondition;
-        //public TextView imgCondition;
+        public ImageView imgCondition;
 
         public ForecastHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,7 +84,7 @@ public class ForecastAdapter extends RecyclerView.Adapter {
             day = itemView.findViewById(R.id.item_forecast_day);
             temp = itemView.findViewById(R.id.item_forecast_temp);
             textCondition = itemView.findViewById(R.id.item_forecast_condition_text);
-            //imgCondition = itemView.findViewById(R.id.item_forecast_condition_image);
+            imgCondition = itemView.findViewById(R.id.item_forecast_condition_image);
         }
     }
 }

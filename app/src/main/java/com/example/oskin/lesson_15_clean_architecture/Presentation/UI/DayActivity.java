@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.DayPresenter;
@@ -41,6 +42,9 @@ public class DayActivity extends AppCompatActivity implements IDayView {
 
     //TODO почему главный экран грузиться по новой?
     private void initActionBar() {
+
+        //TODO переопределить кнопку назад а то херня какая-то
+
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(getString(R.string.forecast_on_day));
@@ -111,6 +115,11 @@ public class DayActivity extends AppCompatActivity implements IDayView {
                     String.valueOf(mDay.getPrecip())));
         }
         mConditionText.setText(mDay.getConditionText());
+
+        String url = "http:" + mDay.getConditionImgUrl();
+        Glide.with(DayActivity.this)
+                .load(url)
+                .into(mConditionImg);
     }
 
     public static Intent newIntent(Context context) {

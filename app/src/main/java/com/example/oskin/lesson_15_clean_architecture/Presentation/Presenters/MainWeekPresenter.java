@@ -5,7 +5,7 @@ import android.os.Looper;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadWeatherForecast;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDay;
@@ -23,14 +23,16 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
     private LoadWeatherForecast mLoadWeatherForecast;
     private SetSelectedDay mSetSelectedDay;
-    private IRepository mRepository;
+    private IWeatherRepository mRepository;
     private ExecutorService mExecutorService;
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler;
 
     public MainWeekPresenter() {
         mExecutorService = Executors.newSingleThreadExecutor();
-        mRepository = WeatherApp.getRepository();
+        mRepository = WeatherApp.getWeatherRepository();
+        mHandler = new Handler(Looper.getMainLooper());
+        mLoadWeatherForecast = new LoadWeatherForecast(mRepository);
     }
 
     public void onAttach(IMainWeekView view) {
@@ -53,7 +55,6 @@ public class MainWeekPresenter implements ILoadDTOCallback {
                 mView.setCurrentDay(mDTOOutput.getCurrent(), mDTOOutput.getSettingPref());
                 mView.setDataIntoAdapter(mDTOOutput.getForecastForDayList());
                 mView.hideProgress();
-                mView.makeToast("Weather forecast loaded.");
             }
         });
     }
@@ -67,7 +68,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
                     return;
                 }
                 mView.hideProgress();
-                mView.makeToast("Day loaded.");
+                mView.makeToast("No internet connection. Loaded cached forecast.");
             }
         });
     }
@@ -134,7 +135,6 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
         @Override
         public void run() {
-            mLoadWeatherForecast = new LoadWeatherForecast(mRepository);
             mLoadWeatherForecast.loadForecast(threadCallback);
         }
     }

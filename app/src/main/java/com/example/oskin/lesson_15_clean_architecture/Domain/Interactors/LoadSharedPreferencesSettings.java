@@ -1,15 +1,16 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Interactors;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.LoadSharedPrefCallback;
 
 public class LoadSharedPreferencesSettings {
 
-    private IRepository mRepository;
+    private ISettingsRepository mRepository;
     private SharedPrefDTO mDTOOutput;
 
-    public LoadSharedPreferencesSettings(IRepository repository) {
+    public LoadSharedPreferencesSettings(ISettingsRepository repository) {
         mRepository = repository;
     }
 

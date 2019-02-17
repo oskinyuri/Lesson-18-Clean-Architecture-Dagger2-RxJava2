@@ -22,14 +22,6 @@ public class DatabaseManager {
     }
 
     public void addWeatherModel(WeatherModel weatherModel){
-        weatherModel.setCityName(weatherModel.getLocation().getName());
-
-        /**
-         * Сетинг дня недели в каждый день.
-         */
-        for (ForecastDay f: weatherModel.getForecast().getForecastDayList()) {
-            f.setDayOfWeek(UtilDate.getDayOfWeek(f.getDateEpoch()));
-        }
 
         /**
          * Удаление записей страше сегодняшнего числа

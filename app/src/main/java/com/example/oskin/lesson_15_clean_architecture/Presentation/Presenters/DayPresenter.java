@@ -9,7 +9,8 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSele
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSharedPreferencesSettings;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
@@ -20,7 +21,8 @@ public class DayPresenter {
     private IDayView mView;
     private SharedPrefDTO mPrefDTO;
     private ForecastDTOOutput.Day mDay;
-    private IRepository mRepository;
+    private IWeatherRepository mWeatherRepository;
+    private ISettingsRepository mSettingsRepository;
     private GetSelectedDay mGetSelectedDay;
     private GetSharedPreferencesSettings mGetSharedPreferencesSettings;
     private ExecutorService mExecutorService;
@@ -29,7 +31,8 @@ public class DayPresenter {
 
     public DayPresenter() {
         mExecutorService = Executors.newSingleThreadExecutor();
-        mRepository = WeatherApp.getRepository();
+        mSettingsRepository = WeatherApp.getSettingRepository();
+        mWeatherRepository = WeatherApp.getWeatherRepository();
     }
 
     public void onAttach(IDayView view) {
@@ -40,13 +43,11 @@ public class DayPresenter {
         mView = null;
     }
 
-    //TODO два колбека для shared и для выбранного дня, как сделать??? как будет проходить их загрузка с активити
-
     public void getDay() {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mGetSelectedDay = new GetSelectedDay(mRepository);
+                mGetSelectedDay = new GetSelectedDay(mWeatherRepository);
                 mGetSelectedDay.getSelectedDay(new GetSelectedDayCallback() {
                     @Override
                     public void onResponse(ForecastDTOOutput.Day day) {
@@ -54,7 +55,7 @@ public class DayPresenter {
                     }
                 });
 
-                mGetSharedPreferencesSettings = new GetSharedPreferencesSettings(mRepository);
+                mGetSharedPreferencesSettings = new GetSharedPreferencesSettings(mSettingsRepository);
                 mGetSharedPreferencesSettings.getSharedPref(new GetSharedPrefCallback() {
                     @Override
                     public void onResponse(SharedPrefDTO sharedPrefDTO) {

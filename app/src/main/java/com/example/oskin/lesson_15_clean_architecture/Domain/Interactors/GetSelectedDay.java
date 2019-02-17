@@ -1,13 +1,13 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Interactors;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 
 public class GetSelectedDay {
 
-    private IRepository mRepository;
+    private IWeatherRepository mRepository;
 
-    public GetSelectedDay(IRepository repository) {
+    public GetSelectedDay(IWeatherRepository repository) {
         mRepository = repository;
     }
 

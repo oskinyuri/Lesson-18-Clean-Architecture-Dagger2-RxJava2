@@ -2,15 +2,15 @@ package com.example.oskin.lesson_15_clean_architecture.Domain.Interactors;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
 
 public class GetSharedPreferencesSettings implements GetSharedPrefCallback {
 
-    private IRepository mRepository;
+    private ISettingsRepository mRepository;
     private GetSharedPrefCallback mPrefCallback;
     private SharedPrefDTO mDTOOutput;
 
-    public GetSharedPreferencesSettings(IRepository repository) {
+    public GetSharedPreferencesSettings(ISettingsRepository repository) {
         mRepository = repository;
     }
 

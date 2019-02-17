@@ -1,7 +1,5 @@
 package com.example.oskin.lesson_15_clean_architecture.Data.DB;
 
-import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.Forecast;
-import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.ForecastDay;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
 
 import androidx.room.Dao;

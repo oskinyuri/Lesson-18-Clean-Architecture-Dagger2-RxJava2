@@ -1,14 +1,14 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Interactors;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
 
 public class SetSelectedDay {
 
-    private IRepository mRepository;
+    private IWeatherRepository mRepository;
 
-    public SetSelectedDay(IRepository repository){
+    public SetSelectedDay(IWeatherRepository repository){
         mRepository = repository;
     }
 

@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/week_current_condition_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,20 +64,20 @@
         android:id="@+id/week_current_temperature_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/stub_t"
-        android:textSize="18sp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/week_current_condition_img"
         app:layout_constraintEnd_toStartOf="@+id/week_current_condition_img"
-        app:layout_constraintTop_toBottomOf="@+id/week_current_city_name_text_view"
+        app:layout_constraintTop_toTopOf="@+id/week_current_condition_img"
         tools:text="-4˚" />
 
     <TextView
         android:id="@+id/week_current_condition_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/stub_condition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/week_current_temperature_text_view"
@@ -87,8 +87,8 @@
         android:id="@+id/week_current_feels_like_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/stub_feels_like_t"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/week_current_condition_text_view"
@@ -108,15 +108,25 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Moscow" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/week_forecast_recycler"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/week_swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/week_current_cloud_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/week_current_cloud_text_view">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/week_forecast_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <ProgressBar
         android:id="@+id/week_progressBar"
