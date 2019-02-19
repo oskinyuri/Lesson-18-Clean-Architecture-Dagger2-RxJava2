@@ -1,6 +1,6 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO;
 
-public class SharedPrefDTO {
+public class UserPreferences {
 
     private String mCityName;
     private int mCountDays;

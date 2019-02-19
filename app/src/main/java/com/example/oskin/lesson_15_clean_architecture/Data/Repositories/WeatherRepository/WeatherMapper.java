@@ -3,7 +3,7 @@ package com.example.oskin.lesson_15_clean_architecture.Data.Repositories.Weather
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.ForecastDay;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.Utils.UtilDate;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.List;
 
 public class WeatherMapper {
 
-    public WeatherModel getDBModelFromResponse(WeatherModel weatherModel, SharedPrefDTO sharedPrefDTO){
+    public WeatherModel getDBModelFromResponse(WeatherModel weatherModel, UserPreferences userPreferences){
 
         /**
          * Установка правильного имени города из настроеек.
          */
-        weatherModel.setCityName(sharedPrefDTO.getCityName());
-        weatherModel.getLocation().setName(sharedPrefDTO.getCityName());
+        weatherModel.setCityName(userPreferences.getCityName());
+        weatherModel.getLocation().setName(userPreferences.getCityName());
 
         /**
          * Сетинг дня недели в каждый день.
@@ -30,22 +30,22 @@ public class WeatherMapper {
     }
 
 
-    public ForecastDTOOutput getDTOFromPOJO(WeatherModel weatherModel, SharedPrefDTO sharedPrefDTO) {
+    public ForecastDTOOutput getDTOFromPOJO(WeatherModel weatherModel, UserPreferences userPreferences) {
 
         ForecastDTOOutput dtoOutput = new ForecastDTOOutput();
 
         /**
          * Формирование количетво дней в соответсвии с запросом.
          */
-        weatherModel.getForecast().setForecastDayList(weatherModel.getForecast().getForecastDayList().subList(0,sharedPrefDTO.getCountDays()));
+        weatherModel.getForecast().setForecastDayList(weatherModel.getForecast().getForecastDayList().subList(0, userPreferences.getCountDays()));
 
         /**
          * Сетинг текущих настроек
          */
         ForecastDTOOutput.SettingPref settingPref = new ForecastDTOOutput.SettingPref();
-        settingPref.setCelsius(sharedPrefDTO.isCelsius());
-        settingPref.setMm(sharedPrefDTO.isMm());
-        settingPref.setKilometers(sharedPrefDTO.isKm());
+        settingPref.setCelsius(userPreferences.isCelsius());
+        settingPref.setMm(userPreferences.isMm());
+        settingPref.setKilometers(userPreferences.isKm());
         dtoOutput.setSettingPref(settingPref);
 
         /**
@@ -61,19 +61,19 @@ public class WeatherMapper {
         current.setHumidity(weatherModel.getCurrent().getHumidity());
         current.setCloud(weatherModel.getCurrent().getCloud());
 
-        if (sharedPrefDTO.isCelsius()) {
+        if (userPreferences.isCelsius()) {
             current.setTemp(weatherModel.getCurrent().getTempC());
             current.setFeelslike(weatherModel.getCurrent().getFeelslikeC());
         } else {
             current.setTemp(weatherModel.getCurrent().getTempF());
             current.setFeelslike(weatherModel.getCurrent().getFeelslikeF());
         }
-        if (sharedPrefDTO.isKm()) {
+        if (userPreferences.isKm()) {
             current.setWind(weatherModel.getCurrent().getWindKph());
         } else {
             current.setWind(weatherModel.getCurrent().getWindMph());
         }
-        if (sharedPrefDTO.isMm()){
+        if (userPreferences.isMm()){
             current.setPrecip(weatherModel.getCurrent().getPrecipMm());
         } else {
             current.setPrecip(weatherModel.getCurrent().getPrecipIn());
@@ -106,7 +106,7 @@ public class WeatherMapper {
             /**
              * Выбор данных в зависимости от отединиц измерения в sheredPref'ов
              */
-            if (sharedPrefDTO.isCelsius()) {
+            if (userPreferences.isCelsius()) {
                 day.setMinTemp(fDay.getDay().getMintempC());
                 day.setMaxTemp(fDay.getDay().getMaxtempC());
             } else {
@@ -114,13 +114,13 @@ public class WeatherMapper {
                 day.setMaxTemp(fDay.getDay().getMaxtempF());
             }
 
-            if (sharedPrefDTO.isKm()) {
+            if (userPreferences.isKm()) {
                 day.setWind(fDay.getDay().getMaxwindKph());
             } else {
                 day.setWind(fDay.getDay().getMaxwindMph());
             }
 
-            if (sharedPrefDTO.isMm()) {
+            if (userPreferences.isMm()) {
                 day.setPrecip(fDay.getDay().getTotalprecipMm());
             } else {
                 day.setPrecip(fDay.getDay().getTotalprecipIn());

@@ -5,14 +5,14 @@ import android.content.Context;
 import com.example.oskin.lesson_15_clean_architecture.Data.DB.DatabaseManager;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.DTO.LastRequestInfo;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
-import com.example.oskin.lesson_15_clean_architecture.Data.SharedPreferences.WeatherPreferences.SharedPrefWeatherWeatherManager;
+import com.example.oskin.lesson_15_clean_architecture.Data.SharedPreferences.WeatherPreferences.SharedPrefManager;
 import com.example.oskin.lesson_15_clean_architecture.Data.Web.ApiMapper;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetSelectedDayCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetSelectedDayCallback;
 
 public class WeatherRepository implements IWeatherRepository {
 
@@ -20,27 +20,27 @@ public class WeatherRepository implements IWeatherRepository {
 
     private ApiMapper mMapper;
     private DatabaseManager mDBManager;
-    private ISharedPrefWeatherManager mPrefManager;
+    private ISharedPrefManager mPrefManager;
 
     //TODO Interface interaction
     private WeatherModel mWeatherModelResponse;
     private ForecastDTOOutput mForecastDTOOutput;
-    private SharedPrefDTO mSharedPrefDTO;
+    private UserPreferences mUserPreferences;
 
-    private ILoadDTOCallback mLoadCallback;
+    private GetForecastCallback mLoadCallback;
 
     public WeatherRepository(Context context) {
         mContext = context;
 
         mMapper = new ApiMapper();
         mDBManager = new DatabaseManager(mContext);
-        mPrefManager = new SharedPrefWeatherWeatherManager(mContext);
+        mPrefManager = new SharedPrefManager(mContext);
     }
 
     @Override
-    public void loadWeatherForecast(ILoadDTOCallback callback) {
+    public void loadWeatherForecast(GetForecastCallback callback) {
         mLoadCallback = callback;
-        mSharedPrefDTO = mPrefManager.getSharedPrefInDTO();
+        mUserPreferences = mPrefManager.getSharedPrefInDTO();
         WeatherMapper weatherMapper = new WeatherMapper();
 
 
@@ -48,25 +48,25 @@ public class WeatherRepository implements IWeatherRepository {
          * Проверка на необходмость загрузки из интернета при устаревании данных
          */
         if (isDataRelevant()) {
-            mWeatherModelResponse = loadFromDB(mSharedPrefDTO);
-            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mSharedPrefDTO);
+            mWeatherModelResponse = loadFromDB(mUserPreferences);
+            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mUserPreferences);
             mLoadCallback.onResponse(mForecastDTOOutput);
             return;
         }
 
-        mWeatherModelResponse = loadFromWeb(mSharedPrefDTO);
+        mWeatherModelResponse = loadFromWeb(mUserPreferences);
 
         if (mWeatherModelResponse == null) {
             mLoadCallback.onFailure();
-            mWeatherModelResponse = loadFromDB(mSharedPrefDTO);
-            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mSharedPrefDTO);
+            mWeatherModelResponse = loadFromDB(mUserPreferences);
+            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mUserPreferences);
             mLoadCallback.onResponse(mForecastDTOOutput);
         } else {
 
             /**
              * Маппинг модели погоды и сохранение в базу данных.
              */
-            mWeatherModelResponse = weatherMapper.getDBModelFromResponse(mWeatherModelResponse, mSharedPrefDTO);
+            mWeatherModelResponse = weatherMapper.getDBModelFromResponse(mWeatherModelResponse, mUserPreferences);
             mDBManager.addWeatherModel(mWeatherModelResponse);
 
             /**
@@ -75,14 +75,14 @@ public class WeatherRepository implements IWeatherRepository {
             LastRequestInfo info = new LastRequestInfo();
             info.setLastTimeInEpoch(mWeatherModelResponse.getLocation().getLocaltimeEpoch());
             info.setLastCityName(mWeatherModelResponse.getCityName());
-            info.setLastCountDays(mSharedPrefDTO.getCountDays());
+            info.setLastCountDays(mUserPreferences.getCountDays());
             mPrefManager.setLastRequest(info);
 
             /**
              * Выгрузка модели из базы данных и маппинг в DTO.
              */
-            mWeatherModelResponse = loadFromDB(mSharedPrefDTO);
-            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mSharedPrefDTO);
+            mWeatherModelResponse = loadFromDB(mUserPreferences);
+            mForecastDTOOutput = weatherMapper.getDTOFromPOJO(mWeatherModelResponse, mUserPreferences);
             mLoadCallback.onResponse(mForecastDTOOutput);
         }
 
@@ -99,11 +99,11 @@ public class WeatherRepository implements IWeatherRepository {
         callback.onResponse(mPrefManager.getSelectedDay());
     }
 
-    private WeatherModel loadFromDB(SharedPrefDTO request) {
+    private WeatherModel loadFromDB(UserPreferences request) {
         return mDBManager.getWeatherModel(request.getCityName());
     }
 
-    private WeatherModel loadFromWeb(SharedPrefDTO request) {
+    private WeatherModel loadFromWeb(UserPreferences request) {
         return mMapper.loadForecast(request.getCityCoordinatesToString(), request.getCountDays());
     }
 
@@ -111,9 +111,9 @@ public class WeatherRepository implements IWeatherRepository {
 
         LastRequestInfo info = mPrefManager.getLastRequest();
 
-        String cityNameCurrent = mSharedPrefDTO.getCityName();
+        String cityNameCurrent = mUserPreferences.getCityName();
         long currentTime = System.currentTimeMillis();
-        int currentCountDays = mSharedPrefDTO.getCountDays();
+        int currentCountDays = mUserPreferences.getCountDays();
 
         String cityNameLast = info.getLastCityName();
         long lastUpdateTime = info.getLastTimeInEpoch();

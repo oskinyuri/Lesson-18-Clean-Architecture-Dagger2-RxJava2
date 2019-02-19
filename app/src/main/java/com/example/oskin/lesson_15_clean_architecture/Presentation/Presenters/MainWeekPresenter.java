@@ -4,24 +4,24 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.SetSelectedDayCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadWeatherForecastInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetSelectedDayCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetForecastInteractor;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDayInteractor;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainWeekPresenter implements ILoadDTOCallback {
+public class MainWeekPresenter implements GetForecastCallback {
 
     private IMainWeekView mView;
 
     private ForecastDTOOutput mDTOOutput;
     private ForecastDTOOutput.Day mDay;
 
-    private LoadWeatherForecastInteractor mLoadWeatherForecastInteractor;
+    private GetForecastInteractor mGetForecastInteractor;
     private SetSelectedDayInteractor mSetSelectedDayInteractor;
     private IWeatherRepository mRepository;
     private ExecutorService mExecutorService;
@@ -32,7 +32,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         mExecutorService = Executors.newSingleThreadExecutor();
         mRepository = WeatherApp.getWeatherRepository();
         mHandler = new Handler(Looper.getMainLooper());
-        mLoadWeatherForecastInteractor = new LoadWeatherForecastInteractor(mRepository);
+        mGetForecastInteractor = new GetForecastInteractor(mRepository);
     }
 
     public void onAttach(IMainWeekView view) {
@@ -94,7 +94,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-               mLoadWeatherForecastInteractor.loadForecast(new ILoadDTOCallback() {
+               mGetForecastInteractor.loadForecast(new GetForecastCallback() {
                    @Override
                    public void onResponse(ForecastDTOOutput dtoOutput) {
                        MainWeekPresenter.this.onResponse(dtoOutput);
@@ -130,9 +130,9 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
 
     private class LoadRunnable implements Runnable {
-        private ILoadDTOCallback threadCallback;
+        private GetForecastCallback threadCallback;
 
-        public LoadRunnable(ILoadDTOCallback callback) {
+        public LoadRunnable(GetForecastCallback callback) {
             threadCallback = callback;
 
 
@@ -140,7 +140,7 @@ public class MainWeekPresenter implements ILoadDTOCallback {
 
         @Override
         public void run() {
-            mLoadWeatherForecastInteractor.loadForecast(threadCallback);
+            mGetForecastInteractor.loadForecast(threadCallback);
         }
     }
 }

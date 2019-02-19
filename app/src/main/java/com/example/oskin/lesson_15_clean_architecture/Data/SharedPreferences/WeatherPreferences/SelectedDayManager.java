@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.google.gson.Gson;
 
-public class SelectedManager {
+public class SelectedDayManager {
 
     private String PREF_SELECTED_DAY = "PREF_SELECTED_DAY";
     private String SELECTED_DAY = "SELECTED_DAY";

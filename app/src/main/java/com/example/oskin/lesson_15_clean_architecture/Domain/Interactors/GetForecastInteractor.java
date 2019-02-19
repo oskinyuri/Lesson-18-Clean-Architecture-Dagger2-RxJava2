@@ -1,19 +1,19 @@
 package com.example.oskin.lesson_15_clean_architecture.Domain.Interactors;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ILoadDTOCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
 
-public class LoadWeatherForecastInteractor implements ILoadDTOCallback {
+public class GetForecastInteractor implements GetForecastCallback {
 
-    private ILoadDTOCallback mCallback;
+    private GetForecastCallback mCallback;
     private IWeatherRepository mRepository;
 
-    public LoadWeatherForecastInteractor(IWeatherRepository repository){
+    public GetForecastInteractor(IWeatherRepository repository){
         mRepository = repository;
     }
 
-    public void loadForecast(ILoadDTOCallback callback) {
+    public void loadForecast(GetForecastCallback callback) {
         mCallback = callback;
 
         mRepository.loadWeatherForecast(this);

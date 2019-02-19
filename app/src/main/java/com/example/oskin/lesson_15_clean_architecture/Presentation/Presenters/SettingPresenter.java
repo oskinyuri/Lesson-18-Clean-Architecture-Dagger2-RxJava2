@@ -3,12 +3,12 @@ package com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSharedPrefSettingsInteractor;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.LoadSharedPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.LoadSharedPrefSettingsInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetUserPreferencesInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetUserPrefCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.ISettingsRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetUserPrefCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetUserPreferencesInteractor;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
@@ -18,9 +18,9 @@ public class SettingPresenter {
 
     private ISettingsRepository mRepository;
     private ExecutorService mExecutorService;
-    private LoadSharedPrefSettingsInteractor mLoadSettings;
-    private GetSharedPrefSettingsInteractor mGetSettings;
-    private SharedPrefDTO mSharedPrefDTO;
+    private SetUserPreferencesInteractor mLoadSettings;
+    private GetUserPreferencesInteractor mGetSettings;
+    private UserPreferences mUserPreferences;
 
     private ISettingView mView;
 
@@ -45,18 +45,18 @@ public class SettingPresenter {
             public void run() {
                 if (mView == null)
                     return;
-                mView.setSettingsSharedPref(mSharedPrefDTO);
+                mView.setUserPref(mUserPreferences);
             }
         });
     }
 
-    public void loadSharedPrefSettings(SharedPrefDTO sharedPrefDTO){
-        mSharedPrefDTO = sharedPrefDTO;
+    public void SetUserPrefSettings(UserPreferences userPreferences){
+        mUserPreferences = userPreferences;
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mLoadSettings = new LoadSharedPrefSettingsInteractor(mRepository);
-                mLoadSettings.loadSharedPreferences(mSharedPrefDTO, new LoadSharedPrefCallback() {
+                mLoadSettings = new SetUserPreferencesInteractor(mRepository);
+                mLoadSettings.setUserPreferences(mUserPreferences, new SetUserPrefCallback() {
                     @Override
                     public void onResponse() {
                         showToast("Change saved.");
@@ -71,15 +71,15 @@ public class SettingPresenter {
         });
     }
 
-    public void getSharedPrefSettings(){
+    public void getUserPrefSettings(){
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mGetSettings = new GetSharedPrefSettingsInteractor(mRepository);
-                mGetSettings.getSharedPref(new GetSharedPrefCallback() {
+                mGetSettings = new GetUserPreferencesInteractor(mRepository);
+                mGetSettings.getUserPref(new GetUserPrefCallback() {
                     @Override
-                    public void onResponse(SharedPrefDTO sharedPrefDTO) {
-                        mSharedPrefDTO = sharedPrefDTO;
+                    public void onResponse(UserPreferences userPreferences) {
+                        mUserPreferences = userPreferences;
                         setSharedPresSettings();
                     }
                 });

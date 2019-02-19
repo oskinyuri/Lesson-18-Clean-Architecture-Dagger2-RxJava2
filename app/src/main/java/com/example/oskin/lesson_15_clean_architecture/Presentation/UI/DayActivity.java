@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.DayPresenter;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.IDayView;
 import com.example.oskin.lesson_15_clean_architecture.R;
@@ -27,7 +27,7 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     private ImageView mConditionImg;
 
     private ForecastDTOOutput.Day mDay;
-    private SharedPrefDTO mPrefDTO;
+    private UserPreferences mPrefDTO;
 
     private DayPresenter mPresenter;
 
@@ -76,7 +76,7 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     }
 
     @Override
-    public void setSharedPrefDto(SharedPrefDTO prefDTO) {
+    public void setSharedPrefDto(UserPreferences prefDTO) {
         mPrefDTO = prefDTO;
     }
 

@@ -16,7 +16,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.ISettingView;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.SettingPresenter;
 import com.example.oskin.lesson_15_clean_architecture.R;
@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
     private EditText mCityNameET;
     private Button mSaveCityNameBtn;
 
-    private SharedPrefDTO mSharedPrefDTO;
+    private UserPreferences mUserPreferences;
 
     private SettingPresenter mPresenter;
 
@@ -77,37 +77,37 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
             @Override
             public void onClick(View v) {
                 //TODO проверку на не нулевое поле
-                mSharedPrefDTO.setCityName(mCityNameET.getText().toString());
-                mPresenter.loadSharedPrefSettings(mSharedPrefDTO);
+                mUserPreferences.setCityName(mCityNameET.getText().toString());
+                mPresenter.SetUserPrefSettings(mUserPreferences);
             }
         });
         mTempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSharedPrefDTO.setCelsius(isChecked);
-                mPresenter.loadSharedPrefSettings(mSharedPrefDTO);
+                mUserPreferences.setCelsius(isChecked);
+                mPresenter.SetUserPrefSettings(mUserPreferences);
             }
         });
         mWindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSharedPrefDTO.setKm(isChecked);
-                mPresenter.loadSharedPrefSettings(mSharedPrefDTO);
+                mUserPreferences.setKm(isChecked);
+                mPresenter.SetUserPrefSettings(mUserPreferences);
             }
         });
         mPrecipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSharedPrefDTO.setMm(isChecked);
-                mPresenter.loadSharedPrefSettings(mSharedPrefDTO);
+                mUserPreferences.setMm(isChecked);
+                mPresenter.SetUserPrefSettings(mUserPreferences);
             }
         });
         mCountDaysSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (mCountDaysSpinner.getTag() != (Integer) position) {
-                    mSharedPrefDTO.setCountDays(mCountDays[position]);
-                    mPresenter.loadSharedPrefSettings(mSharedPrefDTO);
+                    mUserPreferences.setCountDays(mCountDays[position]);
+                    mPresenter.SetUserPrefSettings(mUserPreferences);
                 }
             }
 
@@ -123,16 +123,16 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
         super.onResume();
         mPresenter.onAttach(this);
         mPresenter.initSpinnerAdapter();
-        mPresenter.getSharedPrefSettings();
+        mPresenter.getUserPrefSettings();
     }
 
     private void initState() {
-        mCityNameET.setText(mSharedPrefDTO.getCityName());
-        mTempSwitch.setChecked(mSharedPrefDTO.isCelsius());
-        mPrecipSwitch.setChecked(mSharedPrefDTO.isMm());
-        mWindSwitch.setChecked(mSharedPrefDTO.isKm());
-        mCountDaysSpinner.setSelection(mSharedPrefDTO.getCountDays()-1);
-        mCountDaysSpinner.setTag(mSharedPrefDTO.getCountDays()-1);
+        mCityNameET.setText(mUserPreferences.getCityName());
+        mTempSwitch.setChecked(mUserPreferences.isCelsius());
+        mPrecipSwitch.setChecked(mUserPreferences.isMm());
+        mWindSwitch.setChecked(mUserPreferences.isKm());
+        mCountDaysSpinner.setSelection(mUserPreferences.getCountDays()-1);
+        mCountDaysSpinner.setTag(mUserPreferences.getCountDays()-1);
         initListeners();
     }
 
@@ -143,19 +143,9 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
     }
 
     @Override
-    public void setSettingsSharedPref(SharedPrefDTO sharedPrefDTO) {
-        mSharedPrefDTO = sharedPrefDTO;
+    public void setUserPref(UserPreferences userPreferences) {
+        mUserPreferences = userPreferences;
         initState();
-    }
-
-    @Override
-    public void setCitiesDropList() {
-
-    }
-
-    @Override
-    public void setCountDaysDropList() {
-
     }
 
     @Override

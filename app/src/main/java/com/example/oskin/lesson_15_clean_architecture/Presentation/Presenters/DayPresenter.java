@@ -4,13 +4,13 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.SharedPrefDTO;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSelectedDayInteractor;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetSharedPrefSettingsInteractor;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSelectedDayCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.GetSharedPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.ISettingsRepository;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.IWeatherRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetUserPreferencesInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetSelectedDayCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetUserPrefCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.ISettingsRepository;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
@@ -19,12 +19,12 @@ import java.util.concurrent.Executors;
 public class DayPresenter {
 
     private IDayView mView;
-    private SharedPrefDTO mPrefDTO;
+    private UserPreferences mPrefDTO;
     private ForecastDTOOutput.Day mDay;
     private IWeatherRepository mWeatherRepository;
     private ISettingsRepository mSettingsRepository;
     private GetSelectedDayInteractor mGetSelectedDayInteractor;
-    private GetSharedPrefSettingsInteractor mGetSharedPrefSettingsInteractor;
+    private GetUserPreferencesInteractor mGetUserPreferencesInteractor;
     private ExecutorService mExecutorService;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -34,7 +34,7 @@ public class DayPresenter {
         mSettingsRepository = WeatherApp.getSettingRepository();
         mWeatherRepository = WeatherApp.getWeatherRepository();
         mGetSelectedDayInteractor = new GetSelectedDayInteractor(mWeatherRepository);
-        mGetSharedPrefSettingsInteractor = new GetSharedPrefSettingsInteractor(mSettingsRepository);
+        mGetUserPreferencesInteractor = new GetUserPreferencesInteractor(mSettingsRepository);
     }
 
     public void onAttach(IDayView view) {
@@ -56,10 +56,10 @@ public class DayPresenter {
                     }
                 });
 
-                mGetSharedPrefSettingsInteractor.getSharedPref(new GetSharedPrefCallback() {
+                mGetUserPreferencesInteractor.getUserPref(new GetUserPrefCallback() {
                     @Override
-                    public void onResponse(SharedPrefDTO sharedPrefDTO) {
-                        mPrefDTO = sharedPrefDTO;
+                    public void onResponse(UserPreferences userPreferences) {
+                        mPrefDTO = userPreferences;
                     }
                 });
                 setData();
