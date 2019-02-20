@@ -1,18 +1,16 @@
 package com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters;
 
 import android.os.Handler;
-import android.os.Looper;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetSelectedDayCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetForecastInteractor;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetSelectedDayCallback;
+import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetSelectedDayInteractor;
-import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Qualifier.SingleThread;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainWeekPresenter implements GetForecastCallback {
 
@@ -23,16 +21,19 @@ public class MainWeekPresenter implements GetForecastCallback {
 
     private GetForecastInteractor mGetForecastInteractor;
     private SetSelectedDayInteractor mSetSelectedDayInteractor;
-    private IWeatherRepository mRepository;
     private ExecutorService mExecutorService;
 
-    private final Handler mHandler;
+    private final Handler mUIHandler;
 
-    public MainWeekPresenter() {
-        mExecutorService = Executors.newSingleThreadExecutor();
-        mRepository = WeatherApp.getWeatherRepository();
-        mHandler = new Handler(Looper.getMainLooper());
-        mGetForecastInteractor = new GetForecastInteractor(mRepository);
+    public MainWeekPresenter(@SingleThread ExecutorService executorService,
+                             Handler uiHandler,
+                             GetForecastInteractor getForecastInteractor,
+                             SetSelectedDayInteractor setSelectedDayInteractor) {
+
+        mExecutorService = executorService;
+        mUIHandler = uiHandler;
+        mGetForecastInteractor = getForecastInteractor;
+        mSetSelectedDayInteractor = setSelectedDayInteractor;
     }
 
     public void onAttach(IMainWeekView view) {
@@ -47,7 +48,7 @@ public class MainWeekPresenter implements GetForecastCallback {
     @Override
     public void onResponse(ForecastDTOOutput dtoOutput) {
         mDTOOutput = dtoOutput;
-        mHandler.post(new Runnable() {
+        mUIHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mView == null)
@@ -61,7 +62,7 @@ public class MainWeekPresenter implements GetForecastCallback {
 
     @Override
     public void onFailure() {
-        mHandler.post(new Runnable() {
+        mUIHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mView == null) {
@@ -74,7 +75,7 @@ public class MainWeekPresenter implements GetForecastCallback {
     }
 
     public void startNewScreen() {
-        mHandler.post(new Runnable() {
+        mUIHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mView == null) {
@@ -117,7 +118,6 @@ public class MainWeekPresenter implements GetForecastCallback {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mSetSelectedDayInteractor = new SetSelectedDayInteractor(mRepository);
                 mSetSelectedDayInteractor.setSelectedDay(mDay, new SetSelectedDayCallback() {
                     @Override
                     public void onResponse() {
@@ -134,8 +134,6 @@ public class MainWeekPresenter implements GetForecastCallback {
 
         public LoadRunnable(GetForecastCallback callback) {
             threadCallback = callback;
-
-
         }
 
         @Override

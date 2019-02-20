@@ -21,20 +21,20 @@ public class DayPresenter {
     private IDayView mView;
     private UserPreferences mPrefDTO;
     private ForecastDTOOutput.Day mDay;
-    private IWeatherRepository mWeatherRepository;
-    private ISettingsRepository mSettingsRepository;
     private GetSelectedDayInteractor mGetSelectedDayInteractor;
     private GetUserPreferencesInteractor mGetUserPreferencesInteractor;
     private ExecutorService mExecutorService;
+    private final Handler mHandler;
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    public DayPresenter(ExecutorService executorService,
+                        GetSelectedDayInteractor getSelectedDayInteractor,
+                        GetUserPreferencesInteractor getUserPreferencesInteractor,
+                        Handler handler) {
 
-    public DayPresenter() {
-        mExecutorService = Executors.newSingleThreadExecutor();
-        mSettingsRepository = WeatherApp.getSettingRepository();
-        mWeatherRepository = WeatherApp.getWeatherRepository();
-        mGetSelectedDayInteractor = new GetSelectedDayInteractor(mWeatherRepository);
-        mGetUserPreferencesInteractor = new GetUserPreferencesInteractor(mSettingsRepository);
+        mExecutorService = executorService;
+        mGetSelectedDayInteractor = getSelectedDayInteractor;
+        mGetUserPreferencesInteractor = getUserPreferencesInteractor;
+        mHandler = handler;
     }
 
     public void onAttach(IDayView view) {

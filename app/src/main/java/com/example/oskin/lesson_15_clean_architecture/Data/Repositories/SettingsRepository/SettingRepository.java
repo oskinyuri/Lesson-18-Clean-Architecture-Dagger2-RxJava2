@@ -14,19 +14,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class SettingRepository implements ISettingsRepository {
 
     private Context mContext;
-    private IUserSettingManager mPrefManager;
+    private IUserSettingManager mSettingManager;
 
-    public SettingRepository(Context context) {
+    public SettingRepository(Context context, UserSettingsManager userSettingsManager) {
         mContext = context;
-        mPrefManager = new UserSettingsManager(mContext);
+        mSettingManager = userSettingsManager;
     }
 
     @Override
     public void getUserPreferences(GetUserPrefCallback callback) {
-        callback.onResponse(mPrefManager.getUserPreferences());
+        callback.onResponse(mSettingManager.getUserPreferences());
     }
 
     @Override
@@ -47,7 +49,7 @@ public class SettingRepository implements ISettingsRepository {
             callback.onFailure();
         }
 
-        mPrefManager.setUserPreferences(userPreferences);
+        mSettingManager.setUserPreferences(userPreferences);
         callback.onResponse();
     }
 }

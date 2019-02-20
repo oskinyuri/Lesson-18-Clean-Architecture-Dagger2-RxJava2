@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder;
 import java.util.concurrent.TimeUnit;
 
 
+import javax.inject.Inject;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -17,15 +19,20 @@ public class RetrofitHelper {
 
     public static final String KEY = "66d755c1072e47dcab4161954190202";
 
-    public WeatherApi getService(){
+    private Retrofit mRetrofit;
+
+    @Inject
+    public RetrofitHelper(Retrofit retrofit){
+        mRetrofit = retrofit;
+    }
+
+    public WeatherWebService getService(){
 
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
 
-
-        //TODO it doesn't work( why?
-        final OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
@@ -38,7 +45,7 @@ public class RetrofitHelper {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        return retrofit.create(WeatherApi.class);
+        return mRetrofit.create(WeatherWebService.class);
     }
 
 }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ForecastAdapter extends RecyclerView.Adapter {
@@ -29,6 +30,12 @@ public class ForecastAdapter extends RecyclerView.Adapter {
         mOnClickListener = onClickListener;
         mContext = context;
     }
+
+    /*public ForecastAdapter(AppCompatActivity activity) {
+        mForecastDayList = new ArrayList<>();
+        mOnClickListener = (View.OnClickListener) activity;
+        mContext = activity;
+    }*/
 
     public void setData(List<ForecastDTOOutput.Day> forecastDayList){
         mForecastDayList = forecastDayList;

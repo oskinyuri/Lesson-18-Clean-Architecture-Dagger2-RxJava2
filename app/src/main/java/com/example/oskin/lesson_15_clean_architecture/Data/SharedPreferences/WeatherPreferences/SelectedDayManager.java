@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.google.gson.Gson;
 
+import javax.inject.Inject;
+
 public class SelectedDayManager {
 
     private String PREF_SELECTED_DAY = "PREF_SELECTED_DAY";
@@ -13,20 +15,27 @@ public class SelectedDayManager {
 
     private SharedPreferences mSharedPreferences;
 
-    public void setSelectedDay(ForecastDTOOutput.Day day, Context context){
-        mSharedPreferences = context.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
+    private Context mContext;
+    private Gson mGson;
+
+    @Inject
+    public SelectedDayManager(Context context, Gson gson) {
+        mContext = context;
+        mGson = gson;
+    }
+
+    public void setSelectedDay(ForecastDTOOutput.Day day) {
+        mSharedPreferences = mContext.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(day);
+        String json = mGson.toJson(day);
         editor.putString(SELECTED_DAY, json);
         editor.apply();
     }
 
-    public ForecastDTOOutput.Day getSelectedDay(Context context){
-        mSharedPreferences = context.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
+    public ForecastDTOOutput.Day getSelectedDay() {
+        mSharedPreferences = mContext.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
         String json = mSharedPreferences.getString(SELECTED_DAY, "");
-        ForecastDTOOutput.Day day = gson.fromJson(json, ForecastDTOOutput.Day.class);
+        ForecastDTOOutput.Day day = mGson.fromJson(json, ForecastDTOOutput.Day.class);
         return day;
     }
 }

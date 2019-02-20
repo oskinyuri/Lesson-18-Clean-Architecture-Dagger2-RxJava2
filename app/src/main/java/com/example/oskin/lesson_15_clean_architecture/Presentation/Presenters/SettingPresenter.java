@@ -6,29 +6,30 @@ import android.os.Looper;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.GetUserPreferencesInteractor;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.GetUserPrefCallback;
-import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.DIP.ISettingsRepository;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.Interfaces.Callbacks.SetUserPrefCallback;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Interactors.SetUserPreferencesInteractor;
-import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class SettingPresenter {
 
-    private ISettingsRepository mRepository;
     private ExecutorService mExecutorService;
-    private SetUserPreferencesInteractor mLoadSettings;
+    private SetUserPreferencesInteractor mSetSettings;
     private GetUserPreferencesInteractor mGetSettings;
     private UserPreferences mUserPreferences;
 
     private ISettingView mView;
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler;
 
-    public SettingPresenter() {
-        mExecutorService = Executors.newSingleThreadExecutor();
-        mRepository = WeatherApp.getSettingRepository();
+    public SettingPresenter(SetUserPreferencesInteractor setUserPreferencesInteractor,
+                            GetUserPreferencesInteractor getUserPreferencesInteractor,
+                            ExecutorService executorService,
+                            Handler handler) {
+        mSetSettings = setUserPreferencesInteractor;
+        mGetSettings = getUserPreferencesInteractor;
+        mExecutorService = executorService;
+        mHandler = handler;
     }
 
     public void onAttach(ISettingView view) {
@@ -55,8 +56,7 @@ public class SettingPresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mLoadSettings = new SetUserPreferencesInteractor(mRepository);
-                mLoadSettings.setUserPreferences(mUserPreferences, new SetUserPrefCallback() {
+                mSetSettings.setUserPreferences(mUserPreferences, new SetUserPrefCallback() {
                     @Override
                     public void onResponse() {
                         showToast("Change saved.");
@@ -75,7 +75,6 @@ public class SettingPresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mGetSettings = new GetUserPreferencesInteractor(mRepository);
                 mGetSettings.getUserPref(new GetUserPrefCallback() {
                     @Override
                     public void onResponse(UserPreferences userPreferences) {

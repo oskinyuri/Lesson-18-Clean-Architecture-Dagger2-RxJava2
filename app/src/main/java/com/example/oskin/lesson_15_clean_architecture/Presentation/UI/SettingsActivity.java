@@ -17,9 +17,15 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.DaggerSettingActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.SettingActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Modules.activity.SettingActivityModule;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.ISettingView;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.SettingPresenter;
 import com.example.oskin.lesson_15_clean_architecture.R;
+import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
+
+import javax.inject.Inject;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingView {
 
@@ -31,8 +37,10 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
     private Button mSaveCityNameBtn;
 
     private UserPreferences mUserPreferences;
+    private SettingActivityComponent mComponent;
 
-    private SettingPresenter mPresenter;
+    @Inject
+    SettingPresenter mPresenter;
 
     private Integer[] mCountDays;
 
@@ -43,7 +51,12 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
         setContentView(R.layout.activity_settings);
         initViews();
         initActionBar();
-        mPresenter = new SettingPresenter();
+
+        mComponent = DaggerSettingActivityComponent.builder()
+                .appComponent(WeatherApp.getInstance().getAppComponent())
+                .settingActivityModule(new SettingActivityModule())
+                .build();
+        mComponent.injectActivity(SettingsActivity.this);
     }
 
     private void initActionBar() {
@@ -66,6 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingView 
     @Override
     public void setSpinnerAdapter(Integer[] data){
         mCountDays = data;
+        //TODO а это тоже надо через Dagger
         ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mCountDays);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCountDaysSpinner.setAdapter(adapter);

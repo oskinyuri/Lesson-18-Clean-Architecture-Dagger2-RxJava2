@@ -1,6 +1,10 @@
-package com.example.oskin.lesson_15_clean_architecture.Presentation.DI;
+package com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Modules.app;
 
 import android.content.Context;
+
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Qualifier.ApplicationContext;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,6 +19,8 @@ public class ContextModule {
     }
 
     @Provides
+    @Singleton
+    @ApplicationContext
     public Context context(){
         return context.getApplicationContext();
     }

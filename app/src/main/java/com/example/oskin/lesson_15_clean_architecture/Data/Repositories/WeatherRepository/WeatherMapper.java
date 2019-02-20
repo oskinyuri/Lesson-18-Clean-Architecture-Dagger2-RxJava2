@@ -11,6 +11,9 @@ import java.util.List;
 
 public class WeatherMapper {
 
+    public WeatherMapper() {
+    }
+
     public WeatherModel getDBModelFromResponse(WeatherModel weatherModel, UserPreferences userPreferences){
 
         /**

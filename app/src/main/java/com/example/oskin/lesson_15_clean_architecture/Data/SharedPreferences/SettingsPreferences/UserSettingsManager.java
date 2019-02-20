@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.example.oskin.lesson_15_clean_architecture.Data.Repositories.SettingsRepository.IUserSettingManager;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
 
+import javax.inject.Inject;
+
 public class UserSettingsManager implements IUserSettingManager {
 
     private String PREF_SETTINGS = "SETTINGS";
@@ -22,6 +24,7 @@ public class UserSettingsManager implements IUserSettingManager {
     private SharedPreferences mPreferences;
     private UserPreferences mUserPreferences;
 
+    @Inject
     public UserSettingsManager(Context context){
         mContext = context;
     }

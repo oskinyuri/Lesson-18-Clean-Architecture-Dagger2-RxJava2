@@ -7,6 +7,8 @@ import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.Utils.UtilDa
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.Forecast;
 import com.example.oskin.lesson_15_clean_architecture.Data.Entity.WeatherModel.WeatherModel;
 
+import javax.inject.Inject;
+
 import androidx.room.Room;
 
 public class DatabaseManager {

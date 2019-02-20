@@ -12,9 +12,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.UserPreferences;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.DaggerDayActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.DayActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Modules.activity.DayActivityModule;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.DayPresenter;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.IDayView;
 import com.example.oskin.lesson_15_clean_architecture.R;
+import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
+
+import javax.inject.Inject;
 
 public class DayActivity extends AppCompatActivity implements IDayView {
 
@@ -29,7 +35,11 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     private ForecastDTOOutput.Day mDay;
     private UserPreferences mPrefDTO;
 
-    private DayPresenter mPresenter;
+    private DayActivityComponent mComponent;
+
+    @Inject
+    DayPresenter mPresenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +47,16 @@ public class DayActivity extends AppCompatActivity implements IDayView {
         setContentView(R.layout.activity_day);
         initViews();
         initActionBar();
-        mPresenter = new DayPresenter();
+
+        mComponent = DaggerDayActivityComponent.builder()
+                .appComponent(WeatherApp.getInstance().getAppComponent())
+                .dayActivityModule(new DayActivityModule())
+                .build();
+        mComponent.injectActivity(DayActivity.this);
+
     }
 
-    //TODO почему главный экран грузиться по новой?
     private void initActionBar() {
-
-        //TODO переопределить кнопку назад а то херня какая-то
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;

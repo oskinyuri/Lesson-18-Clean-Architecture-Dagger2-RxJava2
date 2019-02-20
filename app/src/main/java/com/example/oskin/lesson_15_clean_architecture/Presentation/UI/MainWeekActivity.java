@@ -11,11 +11,17 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.oskin.lesson_15_clean_architecture.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.DaggerWeekActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Components.WeekActivityComponent;
+import com.example.oskin.lesson_15_clean_architecture.Presentation.DI.Modules.activity.WeekActivityModule;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.IMainWeekView;
 import com.example.oskin.lesson_15_clean_architecture.Presentation.Presenters.MainWeekPresenter;
 import com.example.oskin.lesson_15_clean_architecture.R;
+import com.example.oskin.lesson_15_clean_architecture.WeatherApp;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +31,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainWeekActivity extends AppCompatActivity implements IMainWeekView, View.OnClickListener {
 
+    private WeekActivityComponent mWeekActivityComponent;
+
+
     private RecyclerView mRecyclerView;
-    private ForecastAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private TextView mHumidity;
@@ -43,16 +51,35 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private MainWeekPresenter mPresenter;
+    private WeekActivityComponent mComponent;
+
+    @Inject
+    ForecastAdapter mAdapter;
+
+    @Inject
+    MainWeekPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initDaggerComponent();
+
         setContentView(R.layout.activity_week_main);
         initViews();
         initRecycler();
         initActionBar();
-        mPresenter = new MainWeekPresenter();
+
+
+    }
+
+    private void initDaggerComponent() {
+        mComponent = DaggerWeekActivityComponent.builder()
+                .appComponent(WeatherApp.getInstance().getAppComponent())
+                .weekActivityModule(new WeekActivityModule(MainWeekActivity.this))
+                .build();
+
+        mComponent.injectActivity(MainWeekActivity.this);
     }
 
     private void initActionBar() {
@@ -62,12 +89,15 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     private void initRecycler() {
+
+        //mAdapter = new ForecastAdapter(MainWeekActivity.this, MainWeekActivity.this);
+
         mRecyclerView = findViewById(R.id.week_forecast_recycler);
         mLayoutManager = new LinearLayoutManager(
                 this,
                 RecyclerView.VERTICAL,
                 false);
-        mAdapter = new ForecastAdapter(this, MainWeekActivity.this);
+        //TODO
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
