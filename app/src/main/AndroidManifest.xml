@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.oskin.lesson_15_clean_architecture">
+    package="com.example.oskin.lesson_17_clean_architecture_dagger_2">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".WeatherApp"
+        android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.WeatherApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Presentation.UI.MainWeekActivity">
+        <activity android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,11 +22,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Presentation.UI.SettingsActivity"
-            android:parentActivityName=".Presentation.UI.MainWeekActivity"></activity>
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.SettingsActivity"
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity"></activity>
         <activity
-            android:name=".Presentation.UI.DayActivity"
-            android:parentActivityName=".Presentation.UI.MainWeekActivity"
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.DayActivity"
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity"
             >
         </activity>
     </application>
