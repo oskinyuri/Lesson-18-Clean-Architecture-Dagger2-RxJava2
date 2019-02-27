@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Components.DaggerDayActivityComponent;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Components.DayActivityComponent;
@@ -32,7 +32,7 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     private TextView mConditionText;
     private ImageView mConditionImg;
 
-    private ForecastDTOOutput.Day mDay;
+    private Forecast.Day mDay;
     private UserPreferences mPrefDTO;
 
     private DayActivityComponent mComponent;
@@ -94,7 +94,7 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     }
 
     @Override
-    public void setSelectedDay(ForecastDTOOutput.Day day) {
+    public void setSelectedDay(Forecast.Day day) {
         mDay = day;
     }
 

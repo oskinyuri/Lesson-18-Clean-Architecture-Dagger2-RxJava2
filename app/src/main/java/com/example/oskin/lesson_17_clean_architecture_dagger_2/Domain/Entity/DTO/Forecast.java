@@ -2,7 +2,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DT
 
 import java.util.List;
 
-public class ForecastDTOOutput {
+public class Forecast {
 
     private Current mCurrent;
     private List<Day> mForecastForDayList;

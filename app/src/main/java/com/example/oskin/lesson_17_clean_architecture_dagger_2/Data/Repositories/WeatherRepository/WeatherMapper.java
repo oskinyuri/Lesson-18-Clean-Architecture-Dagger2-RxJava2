@@ -2,7 +2,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Repositorie
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.WeatherModel.ForecastDay;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.WeatherModel.WeatherModel;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.Utils.UtilDate;
 
@@ -33,9 +33,9 @@ public class WeatherMapper {
     }
 
 
-    public ForecastDTOOutput getDTOFromPOJO(WeatherModel weatherModel, UserPreferences userPreferences) {
+    public Forecast getDTOFromPOJO(WeatherModel weatherModel, UserPreferences userPreferences) {
 
-        ForecastDTOOutput dtoOutput = new ForecastDTOOutput();
+        Forecast dtoOutput = new Forecast();
 
         /**
          * Формирование количетво дней в соответсвии с запросом.
@@ -45,7 +45,7 @@ public class WeatherMapper {
         /**
          * Сетинг текущих настроек
          */
-        ForecastDTOOutput.SettingPref settingPref = new ForecastDTOOutput.SettingPref();
+        Forecast.SettingPref settingPref = new Forecast.SettingPref();
         settingPref.setCelsius(userPreferences.isCelsius());
         settingPref.setMm(userPreferences.isMm());
         settingPref.setKilometers(userPreferences.isKm());
@@ -56,7 +56,7 @@ public class WeatherMapper {
          * Выбор данных в зависимости от отединиц измерения в sheredPref'ов
          */
 
-        ForecastDTOOutput.Current current = new ForecastDTOOutput.Current();
+        Forecast.Current current = new Forecast.Current();
 
         current.setCityName(weatherModel.getLocation().getName());
         current.setConditionText(weatherModel.getCurrent().getCondition().getText());
@@ -88,9 +88,9 @@ public class WeatherMapper {
          * Сетинг дней на неделю
          */
 
-        List<ForecastDTOOutput.Day> dayList = new ArrayList<>();
+        List<Forecast.Day> dayList = new ArrayList<>();
         for (ForecastDay fDay : weatherModel.getForecast().getForecastDayList()) {
-            ForecastDTOOutput.Day day = new ForecastDTOOutput.Day();
+            Forecast.Day day = new Forecast.Day();
             day.setDate(fDay.getDate());
             day.setDateEpoch(fDay.getDateEpoch());
 

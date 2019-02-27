@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Components.DaggerWeekActivityComponent;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Components.WeekActivityComponent;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Modules.activity.WeekActivityModule;
@@ -165,8 +165,8 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     @Override
-    public void setCurrentDay(ForecastDTOOutput.Current currentDay,
-                              ForecastDTOOutput.SettingPref settingPref) {
+    public void setCurrentDay(Forecast.Current currentDay,
+                              Forecast.SettingPref settingPref) {
 
         mHumidity.setText(getResources().getString(R.string.humidity,
                 Integer.toString(currentDay.getHumidity())));
@@ -202,7 +202,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     @Override
-    public void setDataIntoAdapter(List<ForecastDTOOutput.Day> dayList) {
+    public void setDataIntoAdapter(List<Forecast.Day> dayList) {
         mAdapter.setData(dayList);
     }
 

@@ -3,7 +3,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPrefe
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class SelectedDayManager {
         mGson = gson;
     }
 
-    public void setSelectedDay(ForecastDTOOutput.Day day) {
+    public void setSelectedDay(Forecast.Day day) {
         mSharedPreferences = mContext.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         String json = mGson.toJson(day);
@@ -32,10 +32,10 @@ public class SelectedDayManager {
         editor.apply();
     }
 
-    public ForecastDTOOutput.Day getSelectedDay() {
+    public Forecast.Day getSelectedDay() {
         mSharedPreferences = mContext.getSharedPreferences(PREF_SELECTED_DAY, Context.MODE_PRIVATE);
         String json = mSharedPreferences.getString(SELECTED_DAY, "");
-        ForecastDTOOutput.Day day = mGson.fromJson(json, ForecastDTOOutput.Day.class);
+        Forecast.Day day = mGson.fromJson(json, Forecast.Day.class);
         return day;
     }
 }

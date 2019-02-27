@@ -2,7 +2,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.Pre
 
 import android.os.Handler;
 
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.GetSelectedDayInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.GetUserPreferencesInteractor;
@@ -15,7 +15,7 @@ public class DayPresenter {
 
     private IDayView mView;
     private UserPreferences mPrefDTO;
-    private ForecastDTOOutput.Day mDay;
+    private Forecast.Day mDay;
     private GetSelectedDayInteractor mGetSelectedDayInteractor;
     private GetUserPreferencesInteractor mGetUserPreferencesInteractor;
     private ExecutorService mExecutorService;
@@ -46,7 +46,7 @@ public class DayPresenter {
             public void run() {
                 mGetSelectedDayInteractor.getSelectedDay(new GetSelectedDayCallback() {
                     @Override
-                    public void onResponse(ForecastDTOOutput.Day day) {
+                    public void onResponse(Forecast.Day day) {
                         mDay = day;
                     }
                 });

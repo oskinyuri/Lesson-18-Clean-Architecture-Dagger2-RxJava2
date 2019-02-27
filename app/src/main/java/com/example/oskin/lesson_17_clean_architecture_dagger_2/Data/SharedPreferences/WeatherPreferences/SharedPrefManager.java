@@ -3,7 +3,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPrefe
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.DTO.LastRequestInfo;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Repositories.WeatherRepository.ISharedPrefManager;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPreferences.SettingsPreferences.UserSettingsManager;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.UserPreferences;
 
 public class SharedPrefManager implements ISharedPrefManager {
@@ -25,12 +25,12 @@ public class SharedPrefManager implements ISharedPrefManager {
     }
 
     @Override
-    public ForecastDTOOutput.Day getSelectedDay() {
+    public Forecast.Day getSelectedDay() {
         return mSelectedDayManager.getSelectedDay();
     }
 
     @Override
-    public void setSelectedDay(ForecastDTOOutput.Day day) {
+    public void setSelectedDay(Forecast.Day day) {
         mSelectedDayManager.setSelectedDay(day);
     }
 

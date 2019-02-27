@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ForecastDTOOutput;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.R;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ForecastAdapter extends RecyclerView.Adapter {
 
-    private List<ForecastDTOOutput.Day> mForecastDayList;
+    private List<Forecast.Day> mForecastDayList;
     private View.OnClickListener mOnClickListener;
     private Context mContext;
 
@@ -35,7 +35,7 @@ public class ForecastAdapter extends RecyclerView.Adapter {
         mContext = activity;
     }*/
 
-    public void setData(List<ForecastDTOOutput.Day> forecastDayList){
+    public void setData(List<Forecast.Day> forecastDayList){
         mForecastDayList = forecastDayList;
         notifyDataSetChanged();
     }
