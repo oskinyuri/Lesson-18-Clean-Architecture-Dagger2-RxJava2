@@ -8,7 +8,7 @@ import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Repositories
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Repositories.WeatherRepository.WeatherRepository;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPreferences.SettingsPreferences.UserSettingsManager;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPreferences.WeatherPreferences.SharedPrefManager;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.ApiMapper;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.RemoteDataSource;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.DIP.ISettingsRepository;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Qualifier.ApplicationContext;
@@ -33,14 +33,14 @@ public class RepositoriesModule {
     @Singleton
     public IWeatherRepository provideWeatherRepository(
             @ApplicationContext Context context,
-            ApiMapper apiMapper,
+            RemoteDataSource remoteDataSource,
             DatabaseManager databaseManager,
             SharedPrefManager sharedPrefManager,
             WeatherMapper weatherMapper) {
 
         return new WeatherRepository(
                 context,
-                apiMapper,
+                remoteDataSource,
                 databaseManager,
                 sharedPrefManager,
                 weatherMapper);

@@ -1,39 +1,28 @@
 package com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Repositories.WeatherRepository;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.DB.DatabaseManager;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.DTO.LastRequestInfo;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.WeatherModel.WeatherModel;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.SharedPreferences.WeatherPreferences.SharedPrefManager;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.ApiMapper;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.RemoteDataSource;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.ResponseBundle;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Entity.DTO.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.Callbacks.GetSelectedDayCallback;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.Callbacks.GetForecastCallback;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.DIP.IWeatherRepository;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Domain.Interactors.Interfaces.Callbacks.SetSelectedDayCallback;
-
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableConverter;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.ReplaySubject;
 
 public class WeatherRepository implements IWeatherRepository {
 
     private Context mContext;
 
-    private ApiMapper mMapper;
-    private DatabaseManager mDBManager;
+    private RemoteDataSource mRemoteSource;
+    private DatabaseManager mLocalSource;
     private ISharedPrefManager mPrefManager;
 
     //TODO Interface interaction
@@ -43,32 +32,31 @@ public class WeatherRepository implements IWeatherRepository {
     private WeatherMapper mWeatherMapper;
 
     // TODO inject from dagger
-    ReplaySubject<ResponseBundle<Forecast>> mSubject;
+    PublishSubject<ResponseBundle<Forecast>> mSubject = PublishSubject.create();
 
     public WeatherRepository(Context context,
-                             ApiMapper apiMapper,
+                             RemoteDataSource remoteDataSource,
                              DatabaseManager databaseManager,
                              SharedPrefManager sharedPrefManager,
                              WeatherMapper weatherMapper) {
+
         mWeatherMapper = weatherMapper;
         mContext = context;
-        mMapper = apiMapper;
-        mDBManager = databaseManager;
+        mRemoteSource = remoteDataSource;
+        mLocalSource = databaseManager;
         mPrefManager = sharedPrefManager;
     }
 
-    // New method
     @Override
-    public Observable<ResponseBundle<Forecast>> loadWeatherForecast() {
-        mSubject = ReplaySubject.create();
-        Completable
-                .fromAction(() -> {
+    public Completable updateData() {
+        return Completable.fromAction(() -> {
             WeatherRepository.this.loadFromBD();
             WeatherRepository.this.loadFromWeb();
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        });
+    }
 
+    @Override
+    public Observable<ResponseBundle<Forecast>> getObservableForecast() {
         return mSubject;
     }
 
@@ -84,32 +72,43 @@ public class WeatherRepository implements IWeatherRepository {
         }
     }
 
-    //New methods
     private void loadFromWeb() {
 
-        //TODO delete it. Testing staff.
+        /*//TODO delete it. Testing staff.
         try {
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
+
         if (!isDataRelevant()) {
-            mWeatherModelResponse = loadFromWeb(mUserPreferences);
+            mWeatherModelResponse = mRemoteSource.getForecast(
+                    mUserPreferences.getCityName(),
+                    mUserPreferences.getCountDays());
+
             if (mWeatherModelResponse != null) {
 
-                createLastRequest();
-
+                /**
+                 * Мапинг ответа сети для БД.
+                 */
                 mWeatherModelResponse = mWeatherMapper.getDBModelFromResponse(mWeatherModelResponse, mUserPreferences);
-                mDBManager.addWeatherModel(mWeatherModelResponse);
+                mLocalSource.addWeatherModel(mWeatherModelResponse);
 
+                /**
+                 * Маппинг ответа БД для внутреннего слоя.
+                 */
                 mWeatherModelResponse = loadFromDB(mUserPreferences);
                 mForecast = mWeatherMapper.getDTOFromPOJO(mWeatherModelResponse, mUserPreferences);
+
+                /**
+                 * Сохранения последнего запроса.
+                 */
+                createLastRequest();
 
                 mSubject.onNext(new ResponseBundle<>(mForecast));
             } else {
                 mSubject.onNext(new ResponseBundle<>(new Exception("No internet connection.")));
             }
-            mSubject.onComplete();
         }
     }
 
@@ -121,23 +120,8 @@ public class WeatherRepository implements IWeatherRepository {
         mPrefManager.setLastRequest(info);
     }
 
-    @Override
-    public void setSelectedDay(Forecast.Day day, SetSelectedDayCallback callback) {
-        mPrefManager.setSelectedDay(day);
-        callback.onResponse();
-    }
-
-    @Override
-    public void getSelectedDay(GetSelectedDayCallback callback) {
-        callback.onResponse(mPrefManager.getSelectedDay());
-    }
-
     private WeatherModel loadFromDB(UserPreferences request) {
-        return mDBManager.getWeatherModel(request.getCityName());
-    }
-
-    private WeatherModel loadFromWeb(UserPreferences request) {
-        return mMapper.loadForecast(request.getCityCoordinatesToString(), request.getCountDays());
+        return mLocalSource.getForecast(request.getCityName());
     }
 
     private boolean isDataRelevant() {
@@ -145,12 +129,13 @@ public class WeatherRepository implements IWeatherRepository {
         LastRequestInfo info = mPrefManager.getLastRequest();
 
         String cityNameCurrent = mUserPreferences.getCityName();
-        long currentTime = System.currentTimeMillis();
-        int currentCountDays = mUserPreferences.getCountDays();
-
         String cityNameLast = info.getLastCityName();
-        long lastUpdateTime = info.getLastTimeInEpoch();
+
+        int currentCountDays = mUserPreferences.getCountDays();
         int lastCountDays = info.getLastCountDays();
+
+        long lastUpdateTime = info.getLastTimeInEpoch();
+        long currentTime = System.currentTimeMillis();
 
         //TODO return 15 minutes
         long maxDifference = 1 * 60 * 1000;
@@ -159,5 +144,15 @@ public class WeatherRepository implements IWeatherRepository {
         return ((cityNameCurrent.equals(cityNameLast))
                 && (timeDifference <= maxDifference)
                 && (currentCountDays <= lastCountDays));
+    }
+
+    @Override
+    public Completable setSelectedDay(Forecast.Day day) {
+        return Completable.fromAction(() -> mPrefManager.setSelectedDay(day));
+    }
+
+    @Override
+    public void getSelectedDay(GetSelectedDayCallback callback) {
+        callback.onResponse(mPrefManager.getSelectedDay());
     }
 }

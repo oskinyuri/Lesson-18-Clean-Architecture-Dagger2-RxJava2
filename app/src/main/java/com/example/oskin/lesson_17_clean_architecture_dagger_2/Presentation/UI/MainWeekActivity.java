@@ -70,7 +70,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
         initRecycler();
         initActionBar();
 
-
+        mPresenter.onCreate();
     }
 
     private void initDaggerComponent() {
@@ -89,9 +89,6 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     private void initRecycler() {
-
-        //mAdapter = new ForecastAdapter(MainWeekActivity.this, MainWeekActivity.this);
-
         mRecyclerView = findViewById(R.id.week_forecast_recycler);
         mLayoutManager = new LinearLayoutManager(
                 this,
@@ -120,12 +117,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     }
 
     private void initListeners() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPresenter.loadWeatherForecast();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadWeatherForecast());
     }
 
     @Override
@@ -145,6 +137,12 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     protected void onPause() {
         mPresenter.onDetach();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.onStop();
+        super.onStop();
     }
 
     @Override

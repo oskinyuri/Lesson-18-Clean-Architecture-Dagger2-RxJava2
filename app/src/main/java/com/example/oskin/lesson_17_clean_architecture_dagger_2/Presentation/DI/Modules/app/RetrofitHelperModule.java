@@ -1,6 +1,6 @@
 package com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Modules.app;
 
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.ApiMapper;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.RemoteDataSource;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Web.WeatherWebService;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.DI.Qualifier.WeatherApiKey;
 import com.google.gson.Gson;
@@ -23,8 +23,8 @@ public class RetrofitHelperModule {
 
     @Provides
     @Singleton
-    ApiMapper provideApiMapper(WeatherWebService weatherWebService, @WeatherApiKey String weatherApiKey){
-        return new ApiMapper(weatherWebService, weatherApiKey);
+    RemoteDataSource provideApiMapper(WeatherWebService weatherWebService, @WeatherApiKey String weatherApiKey){
+        return new RemoteDataSource(weatherWebService, weatherApiKey);
     }
 
     @Provides

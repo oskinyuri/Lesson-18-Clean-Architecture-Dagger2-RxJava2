@@ -4,17 +4,17 @@ import com.example.oskin.lesson_17_clean_architecture_dagger_2.Data.Entity.Weath
 
 import java.io.IOException;
 
-public class ApiMapper {
+public class RemoteDataSource {
 
     private WeatherWebService mWeatherWebService;
     private String mApiKey;
 
-    public ApiMapper(WeatherWebService weatherWebService, String apiKey) {
+    public RemoteDataSource(WeatherWebService weatherWebService, String apiKey) {
         mApiKey = apiKey;
         mWeatherWebService = weatherWebService;
     }
 
-    public WeatherModel loadForecast(final String city, int days) {
+    public WeatherModel getForecast(final String city, int days) {
         try {
             WeatherModel weatherModel = mWeatherWebService
                     .getForecast(mApiKey, city, days).execute().body();

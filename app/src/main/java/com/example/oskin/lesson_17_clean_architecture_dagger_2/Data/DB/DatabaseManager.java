@@ -29,7 +29,7 @@ public class DatabaseManager {
         db.getForecastDB().addWeatherModel(weatherModel);
     }
 
-    public WeatherModel getWeatherModel(String cityName){
+    public WeatherModel getForecast(String cityName){
         return db.getForecastDB().getWeatherModel(cityName);
     }
 
