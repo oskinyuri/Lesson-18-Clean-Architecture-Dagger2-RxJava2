@@ -56,10 +56,10 @@ public class WeatherRepository implements IWeatherRepository {
     }
 
     @Override
-    public Completable updateData() {
+    public Completable updateData(UserPreferences userPreferences) {
         return Completable.fromAction(() -> {
-            WeatherRepository.this.loadFromBD();
-            WeatherRepository.this.loadFromWeb();
+            WeatherRepository.this.loadFromBD(userPreferences);
+            WeatherRepository.this.loadFromWeb(userPreferences);
         });
     }
 
@@ -68,8 +68,8 @@ public class WeatherRepository implements IWeatherRepository {
         return mSubject;
     }
 
-    private void loadFromBD() {
-        mUserPreferences = mPrefManager.getSharedPrefInDTO();
+    private void loadFromBD(UserPreferences userPreferences) {
+        mUserPreferences = userPreferences;
 
         if (isDataRelevant()){
 
@@ -87,7 +87,9 @@ public class WeatherRepository implements IWeatherRepository {
 
     }
 
-    private void loadFromWeb() {
+    private void loadFromWeb(UserPreferences userPreferences) {
+        mUserPreferences = userPreferences;
+
         mWeatherModelResponse = mRemoteSource.getForecast(
                 mUserPreferences.getCityCoordinatesToString(),
                 mUserPreferences.getCountDays());

@@ -2,6 +2,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interacto
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.ResponseBundle;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.UserPreferences;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -9,7 +10,7 @@ import io.reactivex.Single;
 
 public interface IWeatherRepository {
 
-    Completable updateData();
+    Completable updateData(UserPreferences userPreferences);
 
     Observable<ResponseBundle<Forecast>> getObservableForecast();
 

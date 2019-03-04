@@ -95,7 +95,7 @@ public class WeekPresenter {
     public void loadWeatherForecast() {
         mView.startProgress();
 
-        getForecastDisposable = mGetForecastInteractor.updateData()
+        getForecastDisposable = mGetForecastInteractor.updateData(mUserPreferences)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> getForecastDisposable.dispose());

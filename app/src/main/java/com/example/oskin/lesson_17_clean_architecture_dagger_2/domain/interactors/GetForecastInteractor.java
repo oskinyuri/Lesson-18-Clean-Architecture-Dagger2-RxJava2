@@ -2,6 +2,7 @@ package com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interacto
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.ResponseBundle;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.interfaces.dip.IWeatherRepository;
 
 import io.reactivex.Completable;
@@ -26,8 +27,8 @@ public class GetForecastInteractor {
     /**
      * Обновления данных. Данные придут на заранее полученый горячий observable.
      */
-    public Completable updateData() {
-        return mRepository.updateData();
+    public Completable updateData(UserPreferences userPreferences) {
+        return mRepository.updateData(userPreferences);
     }
 
 }
