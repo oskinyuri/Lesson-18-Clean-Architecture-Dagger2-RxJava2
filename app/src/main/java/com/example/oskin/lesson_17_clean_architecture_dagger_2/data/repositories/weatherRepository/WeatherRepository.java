@@ -89,7 +89,7 @@ public class WeatherRepository implements IWeatherRepository {
 
     private void loadFromWeb() {
         mWeatherModelResponse = mRemoteSource.getForecast(
-                mUserPreferences.getCityName(),
+                mUserPreferences.getCityCoordinatesToString(),
                 mUserPreferences.getCountDays());
 
         if (mWeatherModelResponse != null) {
