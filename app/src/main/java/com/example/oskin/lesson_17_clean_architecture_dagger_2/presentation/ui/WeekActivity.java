@@ -29,10 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainWeekActivity extends AppCompatActivity implements IMainWeekView, View.OnClickListener {
-
-    private WeekActivityComponent mWeekActivityComponent;
-
+public class WeekActivity extends AppCompatActivity implements IMainWeekView, View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -62,24 +59,36 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initDaggerComponent();
-
         setContentView(R.layout.activity_week_main);
         initViews();
         initRecycler();
         initActionBar();
 
-        //mPresenter.onCreate();
+        //TODO Убрать
+        sWeekActivity = WeekActivity.this;
     }
+
+    //TODO Убрать
+    private static WeekActivity sWeekActivity;
+
+    //TODO ПЕРЕДЕЛАТЬ ЭТО ГОВНО
+    public WeekActivityComponent getWeekActivityComponent() {
+        return mComponent;
+    }
+    public static WeekActivity getInstance() {
+        return sWeekActivity;
+    }
+
+
 
     private void initDaggerComponent() {
         mComponent = DaggerWeekActivityComponent.builder()
                 .appComponent(WeatherApp.getInstance().getAppComponent())
-                .weekActivityModule(new WeekActivityModule(MainWeekActivity.this))
+                .weekActivityModule(new WeekActivityModule(WeekActivity.this))
                 .build();
 
-        mComponent.injectActivity(MainWeekActivity.this);
+        mComponent.injectActivity(WeekActivity.this);
     }
 
     private void initActionBar() {
@@ -146,7 +155,7 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
 
     @Override
     public void makeToast(String text) {
-        Toast.makeText(MainWeekActivity.this, text, Toast.LENGTH_LONG).show();
+        Toast.makeText(WeekActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -227,8 +236,8 @@ public class MainWeekActivity extends AppCompatActivity implements IMainWeekView
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.setting_item) {
-            Toast.makeText(MainWeekActivity.this, "Settings", Toast.LENGTH_SHORT).show();
-            startActivity(SettingsActivity.newIntent(MainWeekActivity.this));
+            Toast.makeText(WeekActivity.this, "Settings", Toast.LENGTH_SHORT).show();
+            startActivity(SettingsActivity.newIntent(WeekActivity.this));
         }
         return true;
     }

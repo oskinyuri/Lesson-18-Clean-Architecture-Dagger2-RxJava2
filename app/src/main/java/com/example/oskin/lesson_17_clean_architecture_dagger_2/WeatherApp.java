@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Components.AppComponent;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Components.DaggerAppComponent;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Components.WeekActivityComponent;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Modules.app.ContextModule;
 
 public class WeatherApp extends Application {
@@ -27,6 +28,11 @@ public class WeatherApp extends Application {
         mAppComponent = DaggerAppComponent.builder()
                 .contextModule(new ContextModule(this))
                 .build();
+
+        //TODO ПЕРЕДЕЛАТЬ ЭТО ГОВНО
+
+
+
     }
 
     public AppComponent getAppComponent(){

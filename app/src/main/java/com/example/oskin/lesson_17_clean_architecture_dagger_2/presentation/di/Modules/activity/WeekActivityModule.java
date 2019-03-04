@@ -5,52 +5,51 @@ import android.os.Handler;
 import android.view.View;
 
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.GetForecastInteractor;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.SelectedDayInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.UserPreferencesInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.interfaces.dip.IWeatherRepository;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.SetSelectedDayInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Modules.scopes.WeekActivityScope;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Qualifier.ActivityContext;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Qualifier.SingleThread;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.presenters.WeekPresenter;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.ForecastAdapter;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.WeekActivity;
 
 import java.util.concurrent.ExecutorService;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class WeekActivityModule {
 
-    private final MainWeekActivity mainWeekActivity;
+    private final WeekActivity mWeekActivity;
 
-    public WeekActivityModule(MainWeekActivity mainWeekActivity){
-        this.mainWeekActivity = mainWeekActivity;
+    public WeekActivityModule(WeekActivity weekActivity){
+        this.mWeekActivity = weekActivity;
     }
 
     @WeekActivityScope
     @Provides
     @ActivityContext
     public Context provideContext(){
-        return mainWeekActivity;
+        return mWeekActivity;
     }
 
     @WeekActivityScope
     @Provides
     public WeekPresenter provideMainWeekPresenter(
-            @SingleThread ExecutorService executorService,
-            Handler uiHandler,
             GetForecastInteractor getForecastInteractor,
-            SetSelectedDayInteractor setSelectedDayInteractor,
-            UserPreferencesInteractor userPreferencesInteractor) {
+            SelectedDayInteractor selectedDayInteractor,
+            UserPreferencesInteractor userPreferencesInteractor,
+            CompositeDisposable compositeDisposable) {
 
         return new WeekPresenter(
-                executorService,
-                uiHandler,
                 getForecastInteractor,
-                setSelectedDayInteractor,
-                userPreferencesInteractor);
+                selectedDayInteractor,
+                userPreferencesInteractor,
+                compositeDisposable);
     }
 
     @WeekActivityScope
@@ -68,14 +67,20 @@ public class WeekActivityModule {
 
     @WeekActivityScope
     @Provides
-    public SetSelectedDayInteractor provideSetSelectedDayInteractor(IWeatherRepository iWeatherRepository) {
-        return new SetSelectedDayInteractor(iWeatherRepository);
+    public SelectedDayInteractor provideSelectedDayInteractor(IWeatherRepository iWeatherRepository) {
+        return new SelectedDayInteractor(iWeatherRepository);
     }
 
     @WeekActivityScope
     @Provides
     public View.OnClickListener provideListener(){
-        return mainWeekActivity;
+        return mWeekActivity;
+    }
+
+    @WeekActivityScope
+    @Provides
+    public CompositeDisposable provideCompositeDisposable(){
+        return new CompositeDisposable();
     }
 
 }

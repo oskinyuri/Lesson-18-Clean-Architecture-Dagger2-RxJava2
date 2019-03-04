@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.WeatherApp;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Components.DaggerDayActivityComponent;
@@ -18,7 +19,6 @@ import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.M
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.presenters.DayPresenter;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.presenters.IDayView;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.R;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.WeatherApp;
 
 import javax.inject.Inject;
 
@@ -49,7 +49,7 @@ public class DayActivity extends AppCompatActivity implements IDayView {
         initActionBar();
 
         mComponent = DaggerDayActivityComponent.builder()
-                .appComponent(WeatherApp.getInstance().getAppComponent())
+                .weekActivityComponent(WeekActivity.getInstance().getWeekActivityComponent())
                 .dayActivityModule(new DayActivityModule())
                 .build();
         mComponent.injectActivity(DayActivity.this);
@@ -79,13 +79,18 @@ public class DayActivity extends AppCompatActivity implements IDayView {
     protected void onResume() {
         super.onResume();
         mPresenter.onAttach(this);
-        mPresenter.getDay();
     }
 
     @Override
     protected void onPause() {
         mPresenter.onDetach();
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 
     @Override

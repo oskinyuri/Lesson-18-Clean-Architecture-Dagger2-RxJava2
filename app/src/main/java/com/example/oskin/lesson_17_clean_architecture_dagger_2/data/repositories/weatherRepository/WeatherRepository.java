@@ -10,11 +10,11 @@ import com.example.oskin.lesson_17_clean_architecture_dagger_2.data.web.RemoteDa
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.ResponseBundle;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.UserPreferences;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.interfaces.callbacks.GetSelectedDayCallback;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.interfaces.dip.IWeatherRepository;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
 
 public class WeatherRepository implements IWeatherRepository {
@@ -153,7 +153,7 @@ public class WeatherRepository implements IWeatherRepository {
     }
 
     @Override
-    public void getSelectedDay(GetSelectedDayCallback callback) {
-        callback.onResponse(mPrefManager.getSelectedDay());
+    public Single<Forecast.Day> getSelectedDay() {
+        return Single.fromCallable(() -> mPrefManager.getSelectedDay());
     }
 }

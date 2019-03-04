@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity"
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.WeekActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
         </activity>
         <activity
             android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.SettingsActivity"
-            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity">
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.WeekActivity">
         </activity>
         <activity
             android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.DayActivity"
-            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity"
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.WeekActivity"
             >
         </activity>
     </application>

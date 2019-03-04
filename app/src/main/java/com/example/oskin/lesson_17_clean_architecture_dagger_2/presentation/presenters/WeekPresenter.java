@@ -1,16 +1,11 @@
 package com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.presenters;
 
-import android.os.Handler;
-
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.Forecast;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.ResponseBundle;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.entity.dto.UserPreferences;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.GetForecastInteractor;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.SetSelectedDayInteractor;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.SelectedDayInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.UserPreferencesInteractor;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Qualifier.SingleThread;
-
-import java.util.concurrent.ExecutorService;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -24,28 +19,26 @@ public class WeekPresenter {
     private Forecast mForecast;
 
     private GetForecastInteractor mGetForecastInteractor;
-    private SetSelectedDayInteractor mSetSelectedDayInteractor;
+    private SelectedDayInteractor mSelectedDayInteractor;
     private UserPreferencesInteractor mUserPreferencesInteractor;
 
     private UserPreferences mUserPreferences;
 
     //TODO inject from dagger
-    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private CompositeDisposable mCompositeDisposable;
 
     private Disposable getForecastDisposable;
 
-    // True at first attach or if user settings was updated when view was detached
-    private boolean needUpdate = true;
 
-    public WeekPresenter(@SingleThread ExecutorService executorService,
-                         Handler uiHandler,
-                         GetForecastInteractor getForecastInteractor,
-                         SetSelectedDayInteractor setSelectedDayInteractor,
-                         UserPreferencesInteractor userPreferencesInteractor) {
+    public WeekPresenter(GetForecastInteractor getForecastInteractor,
+                         SelectedDayInteractor selectedDayInteractor,
+                         UserPreferencesInteractor userPreferencesInteractor,
+                         CompositeDisposable compositeDisposable) {
 
         mGetForecastInteractor = getForecastInteractor;
-        mSetSelectedDayInteractor = setSelectedDayInteractor;
+        mSelectedDayInteractor = selectedDayInteractor;
         mUserPreferencesInteractor = userPreferencesInteractor;
+        mCompositeDisposable = compositeDisposable;
     }
 
     public void onAttach(IMainWeekView view) {
@@ -111,7 +104,7 @@ public class WeekPresenter {
     public void setSelectedDay(int itemPosition) {
         mView.startProgress();
         Forecast.Day day = mForecast.getForecastForDayList().get(itemPosition);
-        mCompositeDisposable.add(mSetSelectedDayInteractor.setSelectedDay(day)
+        mCompositeDisposable.add(mSelectedDayInteractor.setSelectedDay(day)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::startNewScreen));

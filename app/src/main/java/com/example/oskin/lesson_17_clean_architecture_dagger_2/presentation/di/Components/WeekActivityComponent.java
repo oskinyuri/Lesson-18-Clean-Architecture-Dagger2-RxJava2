@@ -1,8 +1,10 @@
 package com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Components;
 
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.SelectedDayInteractor;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.domain.interactors.UserPreferencesInteractor;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Modules.activity.WeekActivityModule;
 import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.di.Modules.scopes.WeekActivityScope;
-import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity;
+import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.WeekActivity;
 
 import dagger.Component;
 
@@ -10,6 +12,10 @@ import dagger.Component;
 @WeekActivityScope
 public interface WeekActivityComponent {
 
-    void injectActivity(MainWeekActivity mainWeekActivity);
+    UserPreferencesInteractor getUserPreferencesInteractor();
+
+    SelectedDayInteractor getSelectedDayInteractor();
+
+    void injectActivity(WeekActivity weekActivity);
 
 }

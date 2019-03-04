@@ -6,7 +6,7 @@ import com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.D
 
 import dagger.Component;
 
-@Component(dependencies = AppComponent.class, modules = DayActivityModule.class)
+@Component(dependencies = {WeekActivityComponent.class}, modules = {DayActivityModule.class})
 @DayActivityScope
 public interface DayActivityComponent {
 
