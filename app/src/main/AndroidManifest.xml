@@ -14,19 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity">
+        <activity
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.SettingsActivity"
-            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity"></activity>
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.SettingsActivity"
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity">
+        </activity>
         <activity
-            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.DayActivity"
-            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.Presentation.UI.MainWeekActivity"
+            android:name="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.DayActivity"
+            android:parentActivityName="com.example.oskin.lesson_17_clean_architecture_dagger_2.presentation.ui.MainWeekActivity"
             >
         </activity>
     </application>
