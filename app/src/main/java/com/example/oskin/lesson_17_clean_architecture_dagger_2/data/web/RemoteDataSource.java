@@ -17,7 +17,7 @@ public class RemoteDataSource {
     public WeatherModel getForecast(final String city, int days) {
         try {
             WeatherModel weatherModel = mWeatherWebService
-                    .getForecast(mApiKey, city, days).execute().body();
+                    .getForecast(mApiKey, city, "ru",days).execute().body();
             return weatherModel;
         } catch (IOException e) {
             return null;

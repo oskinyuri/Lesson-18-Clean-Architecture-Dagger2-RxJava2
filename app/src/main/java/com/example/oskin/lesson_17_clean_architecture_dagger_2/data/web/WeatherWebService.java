@@ -11,6 +11,7 @@ public interface WeatherWebService {
     Call<WeatherModel> getForecast (
             @Query("key") String key,
             @Query("q") String cityName,
+            @Query("lang") String language,
             @Query("days") int days);
 
 
